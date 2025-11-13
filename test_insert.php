@@ -5,7 +5,7 @@ require_once('database.php');
 
 $conn = connectDB();
 
-// 这里假设表名叫 auctions
+// 这233213213叫 auctions
 $query = "INSERT INTO auctions (title, description, start_price, current_price, end_time)
           VALUES ('Test Item', 'This is a test record.', 10.00, 10.00, '2025-12-31 23:59:59')";
 
