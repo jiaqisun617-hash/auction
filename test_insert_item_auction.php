@@ -64,3 +64,5 @@ echo "<p><strong>All insertions completed successfully!</strong></p>";
 
 mysqli_close($connection);
 ?>
+
+
