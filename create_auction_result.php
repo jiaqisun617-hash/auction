@@ -1,7 +1,12 @@
-<?php include_once("header.php"); ?>
-<?php require_once("database.php"); ?>
+<?php
+               
+require_once("database.php");
+$connection = connectDB();
+include_once("header.php");
+?>
 
 <div class="container my-5">
+
 
 <?php
 /*
@@ -22,7 +27,8 @@ $description    = trim($_POST['auctionDetails'] ?? '');
 $condition      = trim($_POST['itemCondition'] ?? '');
 $start_price_in = $_POST['startPrice'] ?? '';
 $end_time       = $_POST['endTime'] ?? '';
-$seller_id      = 1; // Demo only: normally from authenticated user session
+// $seller_id      = 1; // Demo only: normally from authenticated user session
+$seller_id = $_SESSION['user_id'];
 
 $errors = [];
 

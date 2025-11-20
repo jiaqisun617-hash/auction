@@ -18,6 +18,7 @@
 <?php
 session_start();
 
+
 $email = $_POST['email'];
 $password = $_POST['password'];
 
@@ -39,6 +40,7 @@ if ($row = $result->fetch_assoc()) {
         $_SESSION['logged_in'] = true;
         $_SESSION['username'] = $row['username'];
         $_SESSION['account_type'] = $row['account_type'];
+        $_SESSION['user_id'] = $row['user_id']; 
 
     
         echo('<div class="text-center mt-5" style="font-size:20px;">Welcome, ' 
