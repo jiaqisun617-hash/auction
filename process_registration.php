@@ -17,6 +17,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
     $password_repeat = $_POST['password_repeat'] ?? '';
+    $username = trim($_POST['username'] ?? '');
+
 
     $errors = [];
 
@@ -35,6 +37,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if ($password !== $password_repeat) {
         $errors[] = "Passwords do not match.";
+        
+    if (empty($username)) {
+    $errors[] = "Username is required.";
+}
+
     }
 
     // --- Step 4: If there are validation errors, show message ---
@@ -71,10 +78,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit;
     }
 
+    $check_username = "SELECT * FROM User WHERE username = ?";
+$stmt = $connection->prepare($check_username);
+$stmt->bind_param("s", $username);
+$stmt->execute();
+if ($stmt->get_result()->num_rows > 0) {
+    $errors[] = "This username is already taken.";
+}
+
+
     // --- Step 7: Insert new user into database ---
-    $insert_user = "INSERT INTO User (email, password_hash, created_at) VALUES (?, ?, NOW())";
+    $insert_user = "INSERT INTO User (username, email, password_hash, account_type, created_at) VALUES (?,?,?,?, NOW())";
     $stmt = $connection->prepare($insert_user);
-    $stmt->bind_param("ss", $email, $password_hash);
+    $stmt->bind_param("ssss", $username, $email, $password_hash,$accountType);
 
     if ($stmt->execute()) {
         // --- Step 8: Assign role (buyer or seller) ---
