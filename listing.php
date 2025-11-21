@@ -35,6 +35,9 @@ if ($result->num_rows === 0) {
     exit();
 }
 
+
+
+
 $row = $result->fetch_assoc();
 
   $title = $row['title'];
@@ -42,6 +45,24 @@ $row = $result->fetch_assoc();
   $end_time       = new DateTime($row['end_time']);
   $seller_id      = $row['seller_id'];
   $auction_id = $row['auction_id'];
+
+  // <!-- 加了一个watchlist检查 -->
+
+  $watching = false;
+
+if (isset($_SESSION['user_id'])) {
+    $uid = $_SESSION['user_id'];
+
+    $sql_watch = "SELECT 1 FROM watchlist WHERE user_id=? AND auction_id=?";
+    $stmt_watch = $conn->prepare($sql_watch);
+    $stmt_watch->bind_param("ii", $uid, $auction_id);
+    $stmt_watch->execute();
+    $res_watch = $stmt_watch->get_result();
+
+    if ($res_watch->num_rows > 0) {
+        $watching = true;
+    }
+}
 
 
  $sql2 = "
@@ -82,7 +103,7 @@ $num_bids = $result3->fetch_assoc()['count_bids'];
   //       to determine if the user is already watching this item.
   //       For now, this is hardcoded.
   $has_session = true;
-  $watching = false;
+  // $watching = false; hardcode删掉了，跟我逻辑相悖
 ?>
 
 
@@ -145,10 +166,12 @@ $num_bids = $result3->fetch_assoc()['count_bids'];
     </form>
 <?php endif ?>
 
-  
+
+
   </div> <!-- End of right col with bidding info -->
 
 </div> <!-- End of row #2 -->
+
 
 
 
@@ -165,7 +188,7 @@ function addToWatchlist(button) {
   // Sends item ID as an argument to that function.
   $.ajax('watchlist_funcs.php', {
     type: "POST",
-    data: {functionname: 'add_to_watchlist', arguments: [<?php echo($item_id);?>]},
+    data: {functionname: 'add_to_watchlist', arguments: [<?php echo($auction_id);?>]},
 
     success: 
       function (obj, textstatus) {
@@ -197,7 +220,7 @@ function removeFromWatchlist(button) {
   // Sends item ID as an argument to that function.
   $.ajax('watchlist_funcs.php', {
     type: "POST",
-    data: {functionname: 'remove_from_watchlist', arguments: [<?php echo($item_id);?>]},
+    data: {functionname: 'remove_from_watchlist', arguments: [<?php echo($auction_id);?>]},
 
     success: 
       function (obj, textstatus) {

@@ -268,3 +268,17 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+-- 新增watchlist表，需要在myadmin里面手动插入
+CREATE TABLE watchlist (
+    user_id INT NOT NULL,
+    auction_id INT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    notify_email BOOLEAN DEFAULT 0,
+
+    PRIMARY KEY (user_id, auction_id),
+
+    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (auction_id) REFERENCES auction(auction_id) ON DELETE CASCADE
+);

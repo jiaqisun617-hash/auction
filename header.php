@@ -69,6 +69,8 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
 	<li class="nav-item mx-1">
       <a class="nav-link" href="mybids.php">My Bids</a>
     </li>
+    <li class="nav-item"><a class="nav-link" href="mywatchlist.php">My Watchlist</a></li>
+
 	<li class="nav-item mx-1">
       <a class="nav-link" href="recommendations.php">Recommended</a>
     </li>');
