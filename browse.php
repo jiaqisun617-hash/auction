@@ -71,7 +71,7 @@
 
   // Base query: join Item + Auction
   $query = "
-    SELECT i.item_id, i.title, i.description, a.start_price, a.reserve_price, a.end_time
+    SELECT i.item_id, i.title, i.description, a.start_price, a.reserve_price, a.end_time, a.auction_id
     FROM Item i
     JOIN Auction a ON i.item_id = a.item_id
     WHERE 1 = 1
@@ -130,8 +130,33 @@
           $item_id = $row['item_id'];
           $title = $row['title'];
           $description = $row['description'];
-          $current_price = $row['start_price']; // You can later replace with max(bid)
-          $num_bids = 0; // Placeholder: can count from Bid table later
+$auction_id = $row['auction_id'];
+
+
+
+          // Query max bid
+$sql_max = "SELECT MAX(bid_amount) AS max_bid FROM bid WHERE auction_id = ?";
+$stmt_max = $connection->prepare($sql_max);
+$stmt_max->bind_param("i", $auction_id);
+$stmt_max->execute();
+$max_res = $stmt_max->get_result();
+$max_row = $max_res->fetch_assoc();
+
+$current_price = $max_row['max_bid'] ?? $row['start_price'];
+
+          // Query number of bids
+$sql_count = "SELECT COUNT(*) AS count_bids FROM bid WHERE auction_id = ?";
+$stmt_count = $connection->prepare($sql_count);
+$stmt_count->bind_param("i", $auction_id);
+$stmt_count->execute();
+$count_res = $stmt_count->get_result();
+$count_row = $count_res->fetch_assoc();
+
+$num_bids = $count_row['count_bids'];
+
+          
+          
+          
           $end_date = new DateTime($row['end_time']);
 
           // This uses a function defined in utilities.php

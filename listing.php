@@ -1,18 +1,70 @@
 <?php include_once("header.php")?>
 <?php require("utilities.php")?>
+<?php require_once("database.php"); ?>
 
 <?php
   // Get info from the URL:
   $item_id = $_GET['item_id'];
+  $conn = connectDB();
 
   // TODO: Use item_id to make a query to the database.
 
   // DELETEME: For now, using placeholder data.
-  $title = "Placeholder title";
-  $description = "Description blah blah blah";
-  $current_price = 30.50;
-  $num_bids = 1;
-  $end_time = new DateTime('2020-11-02T00:00:00');
+  $sql = "
+    SELECT 
+        Item.title,
+        Item.description,
+        Item.seller_id,
+        Item.condition,
+        Auction.start_price,
+        Auction.reserve_price,
+        Auction.end_time,
+        Auction.auction_id
+    FROM Item
+    JOIN Auction ON Item.item_id = Auction.item_id
+    WHERE Item.item_id = ?
+";
+
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $item_id);
+$stmt->execute();
+$result = $stmt->get_result();
+if ($result->num_rows === 0) {
+    echo "<div class='alert alert-danger'>Auction not found.</div>";
+    include_once("footer.php");
+    exit();
+}
+
+$row = $result->fetch_assoc();
+
+  $title = $row['title'];
+  $description = $row['description'];
+  $end_time       = new DateTime($row['end_time']);
+  $seller_id      = $row['seller_id'];
+  $auction_id = $row['auction_id'];
+
+
+ $sql2 = "
+    SELECT MAX(bid_amount) AS max_bid 
+    FROM Bid 
+    WHERE auction_id = ?
+";
+
+$stmt2 = $conn->prepare($sql2);
+$stmt2->bind_param("i", $auction_id);
+$stmt2->execute();
+$result2 = $stmt2->get_result();
+$max_bid_row = $result2->fetch_assoc();
+
+$current_price = $max_bid_row['max_bid'] ?? $row['start_price'];
+
+$sql3 = "SELECT COUNT(*) AS count_bids FROM Bid WHERE auction_id = ?";
+$stmt3 = $conn->prepare($sql3);
+$stmt3->bind_param("i", $auction_id);
+$stmt3->execute();
+$result3 = $stmt3->get_result();
+$num_bids = $result3->fetch_assoc()['count_bids'];
+
 
   // TODO: Note: Auctions that have ended may pull a different set of data,
   //       like whether the auction ended in a sale or was cancelled due
@@ -82,7 +134,12 @@
         <div class="input-group-prepend">
           <span class="input-group-text">£</span>
         </div>
-	    <input type="number" class="form-control" id="bid">
+	    <input type="number" class="form-control" id="bid" name="bid_amount" min="<?php echo $current_price; ?>"
+    step="1"
+    required>
+      <input type="hidden" name="auction_id" value="<?php echo $auction_id; ?>">
+      <input type="hidden" name="item_id" value="<?php echo $item_id; ?>">
+
       </div>
       <button type="submit" class="btn btn-primary form-control">Place bid</button>
     </form>
