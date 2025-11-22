@@ -282,3 +282,16 @@ CREATE TABLE watchlist (
     FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE,
     FOREIGN KEY (auction_id) REFERENCES auction(auction_id) ON DELETE CASCADE
 );
+
+-- 新增categories表内内容，逻辑为前端从后端调出数据
+INSERT INTO category (category_name) VALUES
+('Electronics'),
+('Fashion'),
+('Home & Kitchen'),
+('Books'),
+('Toys'),
+('Sports'),
+('Collectibles'),
+('Beauty'),
+('Grocery'),
+('Pet Supplies');

@@ -27,6 +27,8 @@ $description    = trim($_POST['auctionDetails'] ?? '');
 $condition      = trim($_POST['itemCondition'] ?? '');
 $start_price_in = $_POST['startPrice'] ?? '';
 $end_time       = $_POST['endTime'] ?? '';
+$category_id = $_POST['auctionCategory'];
+
 // $seller_id      = 1; // Demo only: normally from authenticated user session
 $seller_id = $_SESSION['user_id'];
 
@@ -67,9 +69,9 @@ if (!empty($errors)) {
 */
 
 // Insert Item
-$item_sql  = "INSERT INTO Item (title, description, `condition`, seller_id) VALUES (?, ?, ?, ?)";
+$item_sql  = "INSERT INTO Item (title, description, category_id, `condition`, seller_id) VALUES (?,?, ?, ?, ?)";
 $item_stmt = mysqli_prepare($connection, $item_sql);
-mysqli_stmt_bind_param($item_stmt, "sssi", $title, $description, $condition, $seller_id);
+mysqli_stmt_bind_param($item_stmt, "ssssi", $title, $description,$category_id, $condition, $seller_id);
 
 if (!mysqli_stmt_execute($item_stmt)) {
     echo '<div class="alert alert-danger">Error inserting item into database.</div>';

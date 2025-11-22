@@ -1,6 +1,12 @@
 <?php include_once("header.php")?>
 
 <?php
+require_once("database.php");
+$conn = connectDB();
+$sql_cat = "SELECT category_id, category_name FROM category";
+$result_cat = $conn->query($sql_cat);
+
+
 /* (Uncomment this block to redirect people without selling privileges away from this page)
   // If user is not logged in or not a seller, they should not be able to
   // use this page.
@@ -42,11 +48,19 @@
         <div class="form-group row">
           <label for="auctionCategory" class="col-sm-2 col-form-label text-right">Category</label>
           <div class="col-sm-10">
-            <select class="form-control" id="auctionCategory" name="auctionCategory">
-              <option selected>Choose...</option>
-              <option value="fill">Fill me in</option>
-              <option value="with">with options</option>
-              <option value="populated">populated from a database?</option>
+   
+          <!-- category从后端数据库抓到前面来 -->
+  <select class="form-control" id="auctionCategory" name="auctionCategory" required>
+    <option value="">--Select category--</option>
+
+    <?php while($row = $result_cat->fetch_assoc()): ?>
+        <option value="<?php echo $row['category_id']; ?>">
+            <?php echo htmlspecialchars($row['category_name']); ?>
+        </option>
+    <?php endwhile; ?>
+</select>
+
+
             </select>
             <small id="categoryHelp" class="form-text text-muted"><span class="text-danger">* Optional.</span> This field is not used by Week 5 backend.</small>
           </div>
