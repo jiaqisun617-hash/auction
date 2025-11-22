@@ -13,7 +13,7 @@ include_once("header.php");
     TODO #1: Connect to MySQL database (perhaps by requiring a file that
              already does this).
 */
-$connection = connectDB();
+
 
 /*
     TODO #2: Extract form data into variables. Because the form was a 'post'
@@ -68,6 +68,7 @@ if (!empty($errors)) {
              data into the database.
 */
 
+
 // Insert Item
 $item_sql  = "INSERT INTO Item (title, description, category_id, `condition`, seller_id) VALUES (?,?, ?, ?, ?)";
 $item_stmt = mysqli_prepare($connection, $item_sql);
@@ -82,6 +83,23 @@ if (!mysqli_stmt_execute($item_stmt)) {
 $item_id = mysqli_insert_id($connection);
 mysqli_stmt_close($item_stmt);
 
+
+if (isset($_FILES['item_image']) && $_FILES['item_image']['error'] === UPLOAD_ERR_OK) {
+
+    $tmp = $_FILES['item_image']['tmp_name'];
+
+    $filename = 'item_' . $item_id . '_' . time() . '.jpg';
+    $dest = 'uploads/' . $filename;
+
+    move_uploaded_file($tmp, $dest);
+
+    // 写入 image 表
+    $sql_img = "INSERT INTO image (item_id, path, sort_order)
+                VALUES (?, ?, 1)";
+    $stmt_img = $connection->prepare($sql_img);
+    $stmt_img->bind_param("is", $item_id, $dest);
+    $stmt_img->execute();
+}
 // Insert Auction
 $auction_sql  = "INSERT INTO Auction (item_id, start_price, reserve_price, end_time) VALUES (?, ?, ?, ?)";
 $auction_stmt = mysqli_prepare($connection, $auction_sql);

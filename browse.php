@@ -154,13 +154,22 @@ $count_row = $count_res->fetch_assoc();
 
 $num_bids = $count_row['count_bids'];
 
+// 放图片
+$sql_img = "SELECT path FROM image WHERE item_id = ? ORDER BY sort_order ASC LIMIT 1";
+$stmt_img = $connection->prepare($sql_img);
+$stmt_img->bind_param("i", $row['item_id']);
+$stmt_img->execute();
+$res_img = $stmt_img->get_result();
+$img_path = $res_img->fetch_assoc()['path'] ?? 'uploads/default.jpg';
+
+
           
           
           
           $end_date = new DateTime($row['end_time']);
 
           // This uses a function defined in utilities.php
-          print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
+          print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date, $img_path);
       }
   }
 

@@ -30,7 +30,7 @@ $result_cat = $conn->query($sql_cat);
       before they try to send it, but that kind of functionality should be
       extremely low-priority / only done after all database functions are
       complete. -->
-      <form method="post" action="create_auction_result.php">
+      <form method="post" action="create_auction_result.php" enctype="multipart/form-data">>
         <div class="form-group row">
           <label for="auctionTitle" class="col-sm-2 col-form-label text-right">Title of auction</label>
           <div class="col-sm-10">
@@ -111,6 +111,14 @@ $result_cat = $conn->query($sql_cat);
             <small id="endDateHelp" class="form-text text-muted"><span class="text-danger">* Required.</span> Day for the auction to end.</small>
           </div>
         </div>
+        <!-- 加入image前端上传通道 -->
+         <div class="form-group row">
+  <label class="col-sm-2 col-form-label text-right">Image</label>
+  <div class="col-sm-10">
+    <input type="file" name="item_image" class="form-control" accept="image/*">
+  </div>
+</div>
+
         <button type="submit" class="btn btn-primary form-control">Create Auction</button>
       </form>
     </div>
