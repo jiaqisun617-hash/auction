@@ -35,6 +35,14 @@ if ($result->num_rows === 0) {
     exit();
 }
 
+// 读取图片
+$sql_img = "SELECT path FROM image WHERE item_id = ? ORDER BY sort_order ASC LIMIT 1";
+$stmt_img = $conn->prepare($sql_img);
+$stmt_img->bind_param("i", $item_id);
+$stmt_img->execute();
+$res_img = $stmt_img->get_result();
+$img_path = $res_img->fetch_assoc()['path'] ?? 'uploads/default.jpg';
+
 
 
 
@@ -135,7 +143,17 @@ $num_bids = $result3->fetch_assoc()['count_bids'];
 
     <div class="itemDescription">
     <?php echo($description); ?>
+    <br>
+    <br>
+    <br>
+    
     </div>
+    <?php if (!empty($img_path)) : ?>
+    <img src="<?php echo $img_path; ?>"
+         style="width:300px;height:300px;object-fit:cover;border-radius:8px;margin-bottom:20px;">
+<?php endif; ?>
+
+    
 
   </div>
 
