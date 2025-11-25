@@ -17,11 +17,34 @@
   <!-- Bootstrap and FontAwesome CSS -->
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 
   <!-- Custom CSS file -->
   <link rel="stylesheet" href="css/custom.css">
 
   <title>[My Auction Site] <!--CHANGEME!--></title>
+  <style>
+/* 整个卡片 hover 上浮 */
+.auction-card {
+    transition: all 0.25s ease;
+}
+
+.auction-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.15);
+}
+
+/* 图片变暗 */
+.auction-card img {
+    transition: all 0.25s ease;
+}
+
+.auction-card:hover img {
+    filter: brightness(70%);
+}
+</style>
+
 </head>
 
 

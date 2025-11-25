@@ -114,7 +114,7 @@
 
 <!-- TODO: If result set is empty, print an informative message. Otherwise... -->
 
-<ul class="list-group">
+<div class="row">
 
 <?php
   // If no results found
@@ -176,7 +176,7 @@ $img_path = $res_img->fetch_assoc()['path'] ?? 'uploads/default.jpg';
   mysqli_close($connection);
 ?>
 
-</ul>
+</div>
 
 <!-- Pagination for results listings -->
 <nav aria-label="Search results pages" class="mt-5">
