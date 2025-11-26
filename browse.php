@@ -2,7 +2,150 @@
 
 <?php require("utilities.php")?>
 
-<?php require_once("database.php")?>
+<?php require_once("database.php");
+$conn = connectDB()?>
+
+
+<?php if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] != true) { ?>
+
+
+<!-- Hero Banner -->
+<div class="hero-section" 
+     style="
+       background: url('https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?auto=format&w=1600') 
+       center/cover no-repeat;
+       height: 420px;
+      
+       display: flex;
+       align-items: center;
+       padding: 40px;
+       color: white;
+     ">
+  <div>
+    <h1 style="font-size: 40px; font-weight: 700; line-height: 1.2;">
+      Start Your Auction
+    </h1>
+    <p style="font-size: 18px; margin: 10px 0 24px;">
+      Find unique items with best value
+    </p>
+    <a href="browse.php" 
+       style="
+         background: white;
+         padding: 12px 24px;
+         border-radius: 8px;
+         color: #333;
+         font-weight: 600;
+         text-decoration: none;
+         margin-right: 12px;
+       ">
+       Shop Now
+     </a>
+    <a href="about.php"
+       style="
+         border: 2px solid white;
+         padding: 10px 22px;
+         border-radius: 8px;
+         color: white;
+         font-weight: 600;
+         text-decoration: none;
+       ">
+       About Us
+     </a>
+  </div>
+</div>
+
+      </a>
+  </div>
+
+</div>
+
+<?php } ?>
+
+<!-- 取消搜索栏category，换成上面直接可以点 -->
+<!-- 引入 Font Awesome（如果你的 header 已经有就不用重复） -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+  .category-card {
+    margin-bottom: 20px; /* 让上下两排有距离 */
+}
+
+.category-card {
+    background: #fafafa;
+    border: 1px solid #eee;
+    border-radius: 18px;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    transition: 0.25s;
+    cursor: pointer;
+}
+.category-card:hover {
+    background: #ffffff;
+    transform: translateY(-4px); 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.category-icon {
+    font-size: 30px;
+    color: #444;
+}
+.category-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: #222;
+}
+</style>
+
+<div class="container my-5">
+  <div class="row gy-4 gx-4">
+
+    <?php
+    require_once("database.php");
+    $conn = connectDB();
+
+    // 分类图标映射表（你可以随时改）
+    $icons = [
+      "Electronics"   => "fa-solid fa-tv",
+      "Fashion"       => "fa-solid fa-shirt",
+      "Home & Kitchen"=> "fa-solid fa-couch",
+      "Books"         => "fa-solid fa-book",
+      "Toys"          => "fa-solid fa-puzzle-piece",
+      "Sports"        => "fa-solid fa-basketball",
+      "Collectibles"  => "fa-solid fa-gem",
+      "Others"        => "fa-solid fa-box"
+    ];
+
+    $sql = "SELECT category_id, category_name FROM category";
+    $result = $conn->query($sql);
+
+    while ($row = $result->fetch_assoc()) {
+        $cat_id = $row['category_id'];
+        $cat_name = htmlspecialchars($row['category_name']);
+
+        // 如果分类名存在图标 → 使用图标  
+        // 否则用 default icon
+        $icon_class = isset($icons[$cat_name]) ? $icons[$cat_name] : "fa-solid fa-tags";
+
+        echo '
+        <div class="col-6 col-md-3">
+            <a href="browse.php?cat=' . $cat_id . '" style="text-decoration:none;">
+                <div class="category-card">
+                    <i class="category-icon ' . $icon_class . '"></i>
+                    <div class="category-name">' . $cat_name . '</div>
+                </div>
+            </a>
+        </div>';
+    }
+    ?>
+
+  </div>
+</div>
+
+
+
 
 
 
@@ -14,97 +157,65 @@
 
 
 
-<div id="searchSpecs">
+<div id="searchSpecs" class="mt-4 mb-4">
+  <div style="
+      background:white;
+      border:1px solid #e6e6e6;
+      border-radius:14px;
+      padding:18px 22px;
+      max-width:900px;
+      margin:0 auto;
+      box-shadow:0 2px 6px rgba(0,0,0,0.03);
+  ">
 
-<!-- When this form is submitted, this PHP page is what processes it.
+    <form method="get" action="browse.php">
 
-     Search/sort specs are passed to this page through parameters in the URL
+      <div class="d-flex align-items-center" style="gap:16px;">
 
-     (GET method of passing data to a page). -->
-
-<form method="get" action="browse.php">
-
-  <div class="row">
-
-    <div class="col-md-5 pr-0">
-
-      <div class="form-group">
-
-        <label for="keyword" class="sr-only">Search keyword:</label>
-
-      <div class="input-group">
-
-          <div class="input-group-prepend">
-
-            <span class="input-group-text bg-transparent pr-0 text-muted">
-
-              <i class="fa fa-search"></i>
-
+        <!-- Search box -->
+        <div class="flex-grow-1">
+          <div class="input-group" style="height:44px;">
+            <span class="input-group-text bg-white border-end-0" 
+                  style="border-radius:10px 0 0 10px; border-color:#dcdcdc;">
+              <i class="fa fa-search text-muted"></i>
             </span>
-
+            <input type="text" 
+                   class="form-control border-start-0" 
+                   name="keyword"
+                   placeholder="Search listings..."
+                   style="border-radius:0 10px 10px 0; border-color:#dcdcdc;">
           </div>
-
-          <input type="text" class="form-control border-left-0" id="keyword" name="keyword" placeholder="Search for anything">
-
         </div>
 
-      </div>
-
-    </div>
-
-    <div class="col-md-3 pr-0">
-
-      <div class="form-group">
-
-        <label for="cat" class="sr-only">Search within:</label>
-
-        <select class="form-control" id="cat" name="cat">
-
-          <option selected value="all">All categories</option>
-
-          <option value="fill">Fill me in</option>
-
-          <option value="with">with options</option>
-
-          <option value="populated">populated from a database?</option>
-
+        <!-- Sort -->
+        <select name="order_by"
+                class="form-select"
+                style="width:180px; height:44px; 
+                       border-radius:10px; border-color:#dcdcdc;">
+          <option value="pricelow">Price: Low → High</option>
+          <option value="pricehigh">Price: High → Low</option>
+          <option value="date">Ending Soon</option>
         </select>
 
-      </div>
-
-    </div>
-
-    <div class="col-md-3 pr-0">
-
-      <div class="form-inline">
-
-        <label class="mx-2" for="order_by">Sort by:</label>
-
-        <select class="form-control" id="order_by" name="order_by">
-
-          <option selected value="pricelow">Price (low to high)</option>
-
-          <option value="pricehigh">Price (high to low)</option>
-
-          <option value="date">Soonest expiry</option>
-
-        </select>
+        <!-- Button -->
+        <button class="btn"
+                style="
+                  height:44px;
+                  width:110px;
+                  background:#333;
+                  color:white;
+                  border-radius:10px;
+                  font-weight:600;
+                ">
+          Search
+        </button>
 
       </div>
 
-    </div>
-
-    <div class="col-md-1 px-0">
-
-      <button type="submit" class="btn btn-primary">Search</button>
-
-    </div>
-
+    </form>
   </div>
+</div>
 
-</form>
-
-</div> <!-- end search specs bar -->
 
 
 

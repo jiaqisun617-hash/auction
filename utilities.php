@@ -87,112 +87,65 @@ function print_listing_li($item_id, $title, $desc, $price, $num_bids, $end_time,
 
 
 echo('
-
 <div class="col-md-4 mb-4">
+  <a href="listing.php?item_id=' . $item_id . '" style="text-decoration:none; color:inherit;">
+    <div class="card product-card border-0 shadow-sm" 
+         style="border-radius:16px; overflow:hidden; transition:transform .25s ease, box-shadow .25s ease;">
 
-  <div class="card auction-card shadow-sm" style="border-radius: 16px; overflow: hidden; min-height: 100px;">
-
-
-
-    <a href="listing.php?item_id=' . $item_id . '">
-
-      <img src="' . $img_path . '" class="card-img-top"
-
-           style="height: 260px; object-fit: cover;">
-
-    </a>
-
-
-
-    <div class="card-body">
-
-
-
-     <h5 class="card-title">
-
-  <a href="listing.php?item_id=' . $item_id . '" style="color: #2d3748; text-decoration: none;">
-
-    ' . $title . '
-
-  </a>
-
-</h5>
-
-
-
-
-
-      <p class="card-text text-muted" style="min-height: 40px;">
-
-        ' . $desc_shortened . '
-
-      </p>
-
-
-
-      <!-- 黑色分隔线 -->
-
-      <hr style="margin: 0 0 12px 0; border-top: 1px solid #ddd;">
-
-
-
-      <div class="d-flex justify-content-between align-items-center">
-
-
-
-        <!-- 左边：大号蓝色价格 -->
-
-        <span style="font-size: 1.6em; font-weight: 700; color: #0d6efd;">
-
-          £' . number_format($price, 2) . '
-
-        </span>
-
-
-
-        <!-- 右边：bid 数量 + 时间（纵向排列） -->
-
-        <div class="text-end" style="line-height: 1.3;">
-
-
-
-          <div class="text-success">
-
-            <i class="fa-solid fa-gavel"></i>
-
-            ' . $num_bids . $bid . '
-
-          </div>
-
-
-
-          <div class="text-danger">
-
-            <i class="fa-regular fa-clock"></i>
-
-            ' . $time_remaining . '
-
-          </div>
-
-
-
-        </div>
-
-
-
+      <!-- 图片固定比例：更专业 -->
+      <div style="height:220px; overflow:hidden; background:#f8f8f8;">
+        <img src="' . $img_path . '" 
+             style="width:100%; height:100%; object-fit:cover;">
       </div>
 
+      <div class="card-body" style="padding:18px 20px;">
 
+        <!-- 标题 -->
+        <h5 style="font-weight:600; margin-bottom:6px; color:#1a1a1a;">
+          ' . htmlspecialchars($title) . '
+        </h5>
 
+        <!-- 描述（小号灰色） -->
+        <p style="color:#6c757d; font-size:14px; min-height:42px; margin-bottom:10px;">
+          ' . $desc_shortened . '
+        </p>
+
+        <!-- 分隔线（更轻更现代） -->
+        <hr style="border-top:1px solid #eaeaea; margin:0 0 14px 0;">
+
+        <!-- 底部：价格 + bid -->
+        <div class="d-flex justify-content-between align-items-center">
+
+          <!-- 蓝色价格 -->
+          <span style="
+            font-size:1.4rem; 
+            font-weight:700; 
+            color:#0d6efd;">
+            £' . number_format($price, 2) . '
+          </span>
+
+          <!-- 右侧 bid 信息 -->
+          <div style="text-align:right; font-size:14px; line-height:1.3;">
+
+            <div style="color:#28a745;">
+              <i class="fa-solid fa-gavel"></i>
+              ' . $num_bids . $bid . '
+            </div>
+
+            <div style="color:#dc3545;">
+              <i class="fa-regular fa-clock"></i>
+              ' . $time_remaining . '
+            </div>
+
+          </div>
+        </div>
+
+      </div>
     </div>
-
-
-
-  </div>
-
+  </a>
 </div>
-
 ');
+
 
 
 
