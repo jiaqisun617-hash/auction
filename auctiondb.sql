@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主机： localhost
--- 生成日期： 2025-12-01 18:21:50
+-- 生成日期： 2025-12-01 21:11:16
 -- 服务器版本： 10.4.28-MariaDB
 -- PHP 版本： 8.2.4
 
@@ -42,11 +42,15 @@ CREATE TABLE `auction` (
 --
 
 INSERT INTO `auction` (`auction_id`, `item_id`, `start_price`, `reserve_price`, `start_time`, `end_time`, `status`) VALUES
-(1, 1, 1000.00, 200.00, '2025-11-12 19:08:18', '2025-11-20 19:08:00', 'Sched'),
-(2, 2, 100202.00, 20040.40, '2025-11-13 10:42:58', '2025-12-13 20:00:00', 'Sched'),
 (4, 4, 50.00, 10.00, '2025-11-29 01:29:52', '2025-12-16 19:29:00', 'Sched'),
 (5, 5, 55.00, 11.00, '2025-11-29 01:37:35', '2025-12-17 01:37:00', 'Sched'),
-(6, 6, 15.00, 3.00, '2025-11-29 18:45:04', '2025-12-24 18:47:00', 'Sched');
+(6, 6, 15.00, 3.00, '2025-11-29 18:45:04', '2025-12-24 18:47:00', 'Sched'),
+(8, 8, 500.00, 100.00, '2025-12-01 18:15:32', '2025-12-04 18:14:00', 'Sched'),
+(9, 9, 5.00, 1.00, '2025-12-01 18:24:17', '2025-12-03 18:22:00', 'Sched'),
+(10, 10, 20.00, 4.00, '2025-12-01 18:28:55', '2025-12-04 00:27:00', 'Sched'),
+(11, 11, 200.00, 40.00, '2025-12-01 18:30:35', '2025-12-02 22:29:00', 'Sched'),
+(12, 12, 3000.00, 600.00, '2025-12-01 18:41:22', '2025-12-03 19:40:00', 'Sched'),
+(13, 13, 1000.00, 200.00, '2025-12-01 18:51:53', '2025-12-02 21:51:00', 'Sched');
 
 -- --------------------------------------------------------
 
@@ -72,8 +76,7 @@ INSERT INTO `bid` (`bid_id`, `auction_id`, `bidder_id`, `bid_amount`, `bid_time`
 (3, 4, 4, 52.00, '2025-12-01 00:05:40'),
 (4, 4, 4, 58.00, '2025-12-01 16:00:04'),
 (5, 4, 4, 59.00, '2025-12-01 16:00:23'),
-(6, 4, 4, 60.00, '2025-12-01 16:00:38'),
-(7, 2, 4, 100203.00, '2025-12-01 16:00:50');
+(6, 4, 4, 60.00, '2025-12-01 16:00:38');
 
 -- --------------------------------------------------------
 
@@ -98,9 +101,7 @@ INSERT INTO `category` (`category_id`, `category_name`) VALUES
 (5, 'Toys'),
 (6, 'Sports'),
 (7, 'Collectibles'),
-(8, 'Beauty'),
-(9, 'Grocery'),
-(10, 'Pet Supplies');
+(8, 'Instruments');
 
 -- --------------------------------------------------------
 
@@ -122,7 +123,22 @@ CREATE TABLE `image` (
 INSERT INTO `image` (`image_id`, `item_id`, `path`, `sort_order`) VALUES
 (2, 4, 'uploads/item_4_1764379792.jpg', 1),
 (3, 5, 'uploads/item_5_1764380255.jpg', 1),
-(4, 6, 'uploads/item_6_1764441904.jpg', 1);
+(4, 6, 'uploads/item_6_1764441904.jpg', 1),
+(7, 8, 'uploads/item_8_1764612932_0.jpg', 1),
+(8, 8, 'uploads/item_8_1764612932_1.jpg', 2),
+(9, 8, 'uploads/item_8_1764612932_2.jpg', 3),
+(10, 9, 'uploads/item_9_1764613457_0.jpg', 1),
+(11, 10, 'uploads/item_10_1764613735_0.jpg', 1),
+(12, 11, 'uploads/item_11_1764613835_0.jpg', 1),
+(13, 12, 'uploads/item_12_1764614482_0.jpg', 1),
+(14, 12, 'uploads/item_12_1764614482_1.jpg', 2),
+(15, 12, 'uploads/item_12_1764614482_2.jpg', 3),
+(16, 12, 'uploads/item_12_1764614482_3.jpg', 4),
+(17, 12, 'uploads/item_12_1764614482_4.jpg', 5),
+(18, 13, 'uploads/item_13_1764615113_0.jpg', 1),
+(19, 13, 'uploads/item_13_1764615113_1.jpg', 2),
+(20, 13, 'uploads/item_13_1764615113_2.jpg', 3),
+(21, 13, 'uploads/item_13_1764615113_3.jpg', 4);
 
 -- --------------------------------------------------------
 
@@ -145,11 +161,15 @@ CREATE TABLE `Item` (
 --
 
 INSERT INTO `Item` (`item_id`, `seller_id`, `category_id`, `title`, `description`, `condition`, `date_created`) VALUES
-(1, 1, 1, 'iPhone17 pro', 'smartphone', 'New', '2025-11-12 19:08:18'),
-(2, 1, 1, 'iPhone17 pro max', 'iphone', '', '2025-11-13 10:42:58'),
 (4, 3, 3, 'Chair', 'Wodden Chair', 'Used - Like New', '2025-11-29 01:29:52'),
 (5, 3, 3, 'Chair', 'office chair', 'Used - Good', '2025-11-29 01:37:35'),
-(6, 4, 3, 'Chair', 'White chair', 'Used - Acceptable', '2025-11-29 18:45:04');
+(6, 4, 3, 'Chair', 'White chair', 'Used - Acceptable', '2025-11-29 18:45:04'),
+(8, 3, 2, 'Canada Goose down jacket', 'CANADA GOOSE Canada Goose Expedition Men\'s Parka Classic Upgrade 2051M', 'New', '2025-12-01 18:15:32'),
+(9, 3, 4, 'Book \'ALL THE LIGHT WE CAN NOT SEE\'', 'Written by Anthony Doerr.\r\nIncludes an except from cloud cuckoo land.', 'Used - Good', '2025-12-01 18:24:17'),
+(10, 3, 6, 'Basketball', 'Wilson Official NBA Collaborative Trendy Tie-Dye Gradient Basketball for College Students, Indoor and Outdoor Use, Size 7', 'Used - Good', '2025-12-01 18:28:55'),
+(11, 3, 7, 'Pink Gemstone Necklace ', 'A striking pear-cut pink gemstone centerpiece, surrounded by a brilliant diamond halo and set on an elegant double-chain design. The necklace features intricate diamond-accented curves, adding sparkle and sophistication.', 'Used - Good', '2025-12-01 18:30:35'),
+(12, 3, 8, 'Scott Walker Special Custom left-handed electric guitar, made in USA; Body: Mahogany with textured', 'Body: Mahogany with textured oxidised copper finish; Neck: three piece maple and walnut; Fretboard: birds eye maple, light surface blemish to second fret; Frets: good; Electrics: working; Hardware: good; Case: original fitted hard case; Weight: 4.12kg', 'Used - Like New', '2025-12-01 18:41:22'),
+(13, 3, 1, 'Iphone 17 Pro', 'iPhone 17 pro 512GB', 'New', '2025-12-01 18:51:53');
 
 -- --------------------------------------------------------
 
@@ -194,7 +214,7 @@ INSERT INTO `user` (`user_id`, `username`, `email`, `password_hash`, `account_ty
 (1, '', 'jiaqisun617@gmail.com', '$2y$10$YAvdeWYnjh8mQyWOPvjg1uB9a/y4RtppqdkUK5GWbQLGTMZkSiHwO', 'buyer', '2025-11-12 19:07:10'),
 (2, 'TestBuyer', 'TestBuyer@gmail.com', '$2y$10$ia4nS7kT8Tpw2YGUgqc0su74B9D3edUAooHU0eBqLW671Hzvjj/wm', 'buyer', '2025-11-29 00:51:34'),
 (3, 'TestSeller', 'TestSeller@gmail.com', '$2y$10$15tgS.9pAT7FtuZ7.M60S.CPWyO2MFsILIILx1.fvVfs9Z.Tbmf6i', 'seller', '2025-11-29 01:24:00'),
-(4, 'JYW', 'wu029385@gmail.com', '$2y$10$g2DDjQbYXph7/Isor4W6XuFgbXSxkVW1pSO/KZJXmYM5e0g6tq55a', 'buyer', '2025-11-29 15:18:44');
+(4, 'U1', 'wu029385@gmail.com', '$2y$10$g2DDjQbYXph7/Isor4W6XuFgbXSxkVW1pSO/KZJXmYM5e0g6tq55a', 'buyer', '2025-11-29 15:18:44');
 
 -- --------------------------------------------------------
 
@@ -309,7 +329,7 @@ ALTER TABLE `watchlist`
 -- 使用表AUTO_INCREMENT `auction`
 --
 ALTER TABLE `auction`
-  MODIFY `auction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `auction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- 使用表AUTO_INCREMENT `bid`
@@ -327,13 +347,13 @@ ALTER TABLE `category`
 -- 使用表AUTO_INCREMENT `image`
 --
 ALTER TABLE `image`
-  MODIFY `image_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `image_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- 使用表AUTO_INCREMENT `Item`
 --
 ALTER TABLE `Item`
-  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- 使用表AUTO_INCREMENT `role`
