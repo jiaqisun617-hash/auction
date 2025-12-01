@@ -36,7 +36,7 @@ if ($result->num_rows === 0) {
 }
 
 // 读取图片
-$sql_img = "SELECT path FROM image WHERE item_id = ? ORDER BY sort_order ASC LIMIT 1";
+$sql_img = "SELECT path FROM image WHERE item_id = ? ORDER BY sort_order ASC ";
 $stmt_img = $conn->prepare($sql_img);
 $stmt_img->bind_param("i", $item_id);
 $stmt_img->execute();
@@ -148,10 +148,55 @@ $num_bids = $result3->fetch_assoc()['count_bids'];
     <br>
     
     </div>
-    <?php if (!empty($img_path)) : ?>
-    <img src="<?php echo $img_path; ?>"
-         style="width:300px;height:300px;object-fit:cover;border-radius:8px;margin-bottom:20px;">
+    
+ <?php
+// 获取所有图片
+$sql_img = "SELECT path FROM image WHERE item_id = ? ORDER BY sort_order ASC";
+$stmt_img = $conn->prepare($sql_img);
+$stmt_img->bind_param("i", $item_id);
+$stmt_img->execute();
+$res_img = $stmt_img->get_result();
+
+$images = [];
+while ($row_img = $res_img->fetch_assoc()) {
+    $images[] = $row_img['path'];
+}
+?>
+
+<?php if (count($images) > 0): ?>
+<div id="itemCarousel" class="carousel slide mb-3" data-ride="carousel">
+
+  <!-- Indicators (optional small dots) -->
+  <ol class="carousel-indicators">
+    <?php foreach ($images as $idx => $img): ?>
+      <li data-target="#itemCarousel" data-slide-to="<?php echo $idx; ?>" 
+          class="<?php echo ($idx == 0 ? 'active' : ''); ?>"></li>
+    <?php endforeach; ?>
+  </ol>
+
+  <!-- Slides -->
+  <div class="carousel-inner">
+    <?php foreach ($images as $idx => $img): ?>
+    <div class="carousel-item <?php echo ($idx == 0 ? 'active' : ''); ?>">
+      <img src="<?php echo $img; ?>" 
+           class="d-block" 
+           style="width:600px;height:600px;object-fit:contain;border-radius:8px;margin:auto;">
+
+    </div>
+    <?php endforeach; ?>
+  </div>
+
+  <!-- Controls -->
+  <a class="carousel-control-prev" href="#itemCarousel" role="button" data-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+  </a>
+  <a class="carousel-control-next" href="#itemCarousel" role="button" data-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+  </a>
+
+</div>
 <?php endif; ?>
+
 
     
 
@@ -334,3 +379,28 @@ function removeFromWatchlist(button) {
 
 } // End of addToWatchlist func
 </script>
+
+
+<style>
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-size: 40px 40px;
+    width: 40px;
+    height: 40px;
+    filter: invert(100%);
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    width: 8%;
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+    opacity: 0.8;
+}
+
+.carousel {
+    text-align: center;
+}
+</style>

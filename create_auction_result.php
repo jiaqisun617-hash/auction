@@ -83,23 +83,39 @@ if (!mysqli_stmt_execute($item_stmt)) {
 $item_id = mysqli_insert_id($connection);
 mysqli_stmt_close($item_stmt);
 
+// ---------- 多图片上传处理 ----------
+if (isset($_FILES['item_images']) && !empty($_FILES['item_images']['name'][0])) {
 
-if (isset($_FILES['item_image']) && $_FILES['item_image']['error'] === UPLOAD_ERR_OK) {
+    $files = $_FILES['item_images'];
 
-    $tmp = $_FILES['item_image']['tmp_name'];
+    for ($i = 0; $i < count($files['name']); $i++) {
 
-    $filename = 'item_' . $item_id . '_' . time() . '.jpg';
-    $dest = 'uploads/' . $filename;
+        if ($files['error'][$i] !== UPLOAD_ERR_OK) continue;
 
-    move_uploaded_file($tmp, $dest);
+        // 获取扩展名
+        $ext = pathinfo($files['name'][$i], PATHINFO_EXTENSION);
+        if ($ext == '') $ext = 'jpg';
 
-    // 写入 image 表
-    $sql_img = "INSERT INTO image (item_id, path, sort_order)
-                VALUES (?, ?, 1)";
-    $stmt_img = $connection->prepare($sql_img);
-    $stmt_img->bind_param("is", $item_id, $dest);
-    $stmt_img->execute();
+        // 生成唯一文件名
+        $filename = 'item_' . $item_id . '_' . time() . '_' . $i . '.' . $ext;
+        $dest = 'uploads/' . $filename;
+
+        // 保存文件
+        move_uploaded_file($files['tmp_name'][$i], $dest);
+
+        // 按顺序插入数据库
+        $sort_order = $i + 1;
+
+        $sql_img = "INSERT INTO image (item_id, path, sort_order)
+                    VALUES (?, ?, ?)";
+        $stmt_img = $connection->prepare($sql_img);
+        $stmt_img->bind_param("isi", $item_id, $dest, $sort_order);
+        $stmt_img->execute();
+    }
 }
+
+
+
 // Insert Auction
 $auction_sql  = "INSERT INTO Auction (item_id, start_price, reserve_price, end_time) VALUES (?, ?, ?, ?)";
 $auction_stmt = mysqli_prepare($connection, $auction_sql);
