@@ -30,7 +30,7 @@ $result_cat = $conn->query($sql_cat);
       before they try to send it, but that kind of functionality should be
       extremely low-priority / only done after all database functions are
       complete. -->
-      <form method="post" action="create_auction_result.php" enctype="multipart/form-data">>
+      <form method="post" action="create_auction_result.php" enctype="multipart/form-data">
         <div class="form-group row">
           <label for="auctionTitle" class="col-sm-2 col-form-label text-right">Title of auction</label>
           <div class="col-sm-10">
@@ -61,7 +61,6 @@ $result_cat = $conn->query($sql_cat);
 </select>
 
 
-            </select>
             <small id="categoryHelp" class="form-text text-muted"><span class="text-danger">* Optional.</span> This field is not used by Week 5 backend.</small>
           </div>
         </div>
@@ -115,7 +114,8 @@ $result_cat = $conn->query($sql_cat);
          <div class="form-group row">
   <label class="col-sm-2 col-form-label text-right">Image</label>
   <div class="col-sm-10">
-    <input type="file" name="item_image" class="form-control" accept="image/*">
+    <input type="file" name="item_images[]" class="form-control" accept="image/*" multiple>
+
   </div>
 </div>
 
