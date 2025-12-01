@@ -283,7 +283,7 @@ $conn = connectDB()?>
 
   $num_results = mysqli_num_rows($result);
 
-  $results_per_page = 10;
+  $results_per_page = 8;
 
   $max_page = ceil($num_results / $results_per_page);
 
