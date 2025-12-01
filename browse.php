@@ -8,7 +8,6 @@ $conn = connectDB()?>
 
 
 
-
 </div>
 
       </a>
@@ -109,8 +108,26 @@ $conn = connectDB()?>
 <div class="container">
 
 
+<div style="
+  width:100%;
+  height:1px;
+  background:#e6e6e6;
+  margin-bottom:25px;
+"></div>
 
-<h2 class="my-3">Browse listings</h2>
+
+<h2 style="
+    font-family: 'Playfair Display', serif;
+    text-align:center;
+    font-size: 48px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    margin: 50px 0 35px 0;
+    color:#111;
+">
+  Browse Listings
+</h2>
+
 
 
 
@@ -126,51 +143,34 @@ $conn = connectDB()?>
   ">
 
     <form method="get" action="browse.php">
-      <input type="hidden" name="cat" value="<?php echo htmlspecialchars($_GET['cat'] ?? 'all'); ?>">
-      
-      <div class="d-flex align-items-center" style="gap:16px;">
+  <div class="search-bar-wrapper">
 
-        <!-- Search box -->
-        <div class="flex-grow-1">
-          <div class="input-group" style="height:44px;">
-            <span class="input-group-text bg-white border-end-0" 
-                  style="border-radius:10px 0 0 10px; border-color:#dcdcdc;">
-              <i class="fa fa-search text-muted"></i>
-            </span>
-            <input type="text" 
-                   class="form-control border-start-0" 
-                   name="keyword"
-                   placeholder="Search listings..."
-                   style="border-radius:0 10px 10px 0; border-color:#dcdcdc;">
-          </div>
-        </div>
-
-        <!-- Sort -->
-        <select name="order_by"
-                class="form-select"
-                style="width:180px; height:44px; 
-                       border-radius:10px; border-color:#dcdcdc;">
-          <option value="pricelow">Price: Low → High</option>
-          <option value="pricehigh">Price: High → Low</option>
-          <option value="date">Ending Soon</option>
-        </select>
-
-        <!-- Button -->
-        <button class="btn"
-                style="
-                  height:44px;
-                  width:110px;
-                  background:#333;
-                  color:white;
-                  border-radius:10px;
-                  font-weight:600;
-                ">
-          Search
-        </button>
-
+    <!-- Search box -->
+    <div class="flex-grow-1">
+      <div class="input-group search-input-group">
+        <span class="input-group-text">
+          <i class="fa fa-search text-muted"></i>
+        </span>
+        <input type="text" 
+               class="form-control"
+               name="keyword"
+               placeholder="Search listings...">
       </div>
+    </div>
 
-    </form>
+    <!-- Sort -->
+    <select name="order_by" class="search-select">
+      <option value="pricelow">Price: Low → High</option>
+      <option value="pricehigh">Price: High → Low</option>
+      <option value="date">Ending Soon</option>
+    </select>
+
+    <!-- Button -->
+    <button class="search-btn">Search</button>
+
+  </div>
+</form>
+
   </div>
 </div>
 
