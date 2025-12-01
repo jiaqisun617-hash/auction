@@ -63,28 +63,50 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
     // --- Step 6: Check if email already exists ---
-    $check_query = "SELECT * FROM User WHERE email = ?";
-    $stmt = $connection->prepare($check_query);
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
+$check_query = "SELECT * FROM User WHERE email = ?";
+$stmt = $connection->prepare($check_query);
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$result = $stmt->get_result();
 
-    if ($result->num_rows > 0) {
-        include_once("header.php");
-        echo '<div class="container my-5">';
-        echo '<div class="alert alert-danger">This email is already registered.<br>';
-        echo '<a href="register.php" class="btn btn-secondary mt-3">Go Back</a></div></div>';
-        include_once("footer.php");
-        exit;
+// 如果邮箱存在，不创建新 user，而是进入“追加角色”逻辑
+if ($result->num_rows > 0) {
+    $existing_user = $result->fetch_assoc();
+    $user_id = $existing_user['user_id'];
+    
+    // 查 role_id
+    $role_query = "SELECT role_id FROM Role WHERE role_name = ?";
+    $stmt_role = $connection->prepare($role_query);
+    $stmt_role->bind_param("s", $accountType);
+    $stmt_role->execute();
+    $role_row = $stmt_role->get_result()->fetch_assoc();
+    $role_id = $role_row['role_id'];
+
+    // 尝试添加角色
+    $insert_user_role = "INSERT IGNORE INTO UserRole (user_id, role_id) VALUES (?, ?)";
+    $stmt_ur = $connection->prepare($insert_user_role);
+    $stmt_ur->bind_param("ii", $user_id, $role_id);
+    $stmt_ur->execute();
+
+    include_once("header.php");
+    echo '<div class="container my-5">';
+
+    if ($stmt_ur->affected_rows === 0) {
+        echo "<div class='alert alert-warning text-center'>
+                You already have the <strong>$accountType</strong> role.
+              </div>";
+    } else {
+        echo "<div class='alert alert-success text-center'>
+                Added new role <strong>$accountType</strong> to your account!
+              </div>";
     }
 
-    $check_username = "SELECT * FROM User WHERE username = ?";
-$stmt = $connection->prepare($check_username);
-$stmt->bind_param("s", $username);
-$stmt->execute();
-if ($stmt->get_result()->num_rows > 0) {
-    $errors[] = "This username is already taken.";
+    echo '<a href="#" data-toggle="modal" data-target="#loginModal" class="btn btn-primary mt-3">Login</a>';
+    echo '</div>';
+    include_once("footer.php");
+    exit;
 }
+
 
 
     // --- Step 7: Insert new user into database ---
@@ -95,6 +117,8 @@ if ($stmt->get_result()->num_rows > 0) {
     if ($stmt->execute()) {
         // --- Step 8: Assign role (buyer or seller) ---
         $user_id = $connection->insert_id;
+
+        // 查 role_id
         $role_query = "SELECT role_id FROM Role WHERE role_name = ?";
         $stmt_role = $connection->prepare($role_query);
         $stmt_role->bind_param("s", $accountType);
@@ -105,11 +129,25 @@ if ($stmt->get_result()->num_rows > 0) {
             $role_row = $role_result->fetch_assoc();
             $role_id = $role_row['role_id'];
 
-            $insert_user_role = "INSERT INTO UserRole (user_id, role_id) VALUES (?, ?)";
+            // 使用 INSERT IGNORE 防止重复添加同一角色
+            $insert_user_role = "INSERT IGNORE INTO UserRole (user_id, role_id) VALUES (?, ?)";
             $stmt_ur = $connection->prepare($insert_user_role);
             $stmt_ur->bind_param("ii", $user_id, $role_id);
             $stmt_ur->execute();
+
+            // 如果没有新增任何 row，说明之前已经有这个角色
+            if ($stmt_ur->affected_rows === 0) {
+                echo "<div class='alert alert-warning text-center mt-4'>
+                        You have already registered as a $accountType.
+                    </div>";
+            } else {
+                echo "<div class='alert alert-success text-center mt-4'>
+                        Successfully registered as a $accountType!
+                    </div>";
+            }
         }
+
+
 
         // --- Step 9: Success message ---
         include_once("header.php");

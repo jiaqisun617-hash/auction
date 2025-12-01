@@ -1,6 +1,6 @@
-<?php include_once("header.php")?>
 <?php require("utilities.php")?>
 <?php require_once("database.php"); ?>
+<?php include_once("header.php")?>
 
 <?php
   // Get info from the URL:
@@ -157,36 +157,95 @@ $num_bids = $result3->fetch_assoc()['count_bids'];
 
   </div>
 
-  <div class="col-sm-4"> <!-- Right col with bidding info -->
+   <div class="col-sm-4"> <!-- Right col with bidding info -->
 
+    <?php
+    ?>
     <p>
-<?php if ($now > $end_time): ?>
-     This auction ended <?php echo(date_format($end_time, 'j M H:i')) ?>
-     <!-- TODO: Print the result of the auction here? -->
-<?php else: ?>
-     Auction ends <?php echo(date_format($end_time, 'j M H:i') . $time_remaining) ?></p>  
-    <p class="lead">Current bid: £<?php echo(number_format($current_price, 2)) ?></p>
+      <?php if ($now > $end_time): ?>
+        This auction ended <?php echo date_format($end_time, 'j M H:i'); ?>
+      <?php else: ?>
+        Auction ends <?php echo date_format($end_time, 'j M H:i') . $time_remaining; ?>
+      <?php endif; ?>
+    </p>
 
-    <!-- Bidding form -->
-    <form method="POST" action="place_bid.php">
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <span class="input-group-text">£</span>
+    <p class="lead">
+      Current bid: £<?php echo number_format($current_price, 2); ?>
+    </p>
+
+    <?php
+      $can_bid      = false;
+      $is_seller    = false;
+      $not_logged_in = false;
+
+      if (!isset($_SESSION['user_id'])) {
+          $not_logged_in = true;
+      } else {
+          $uid       = $_SESSION['user_id'];
+          $user_type = $_SESSION['account_type']; // buyer / seller / admin
+
+          if ($uid == $seller_id) {
+              $is_seller = true;
+          }
+
+          if ($user_type === "buyer" && !$is_seller) {
+              $can_bid = true;
+          }
+      }
+    ?>
+
+    <?php if ($now <= $end_time):  ?>
+
+      <?php if ($not_logged_in): ?>
+
+        <div class="alert alert-warning">
+          Please <a href="#" data-toggle="modal" data-target="#loginModal">log in</a>
+ to place a bid.
         </div>
-	    <input type="number" class="form-control" id="bid" name="bid_amount" min="<?php echo $current_price; ?>"
-    step="1"
-    required>
-      <input type="hidden" name="auction_id" value="<?php echo $auction_id; ?>">
-      <input type="hidden" name="item_id" value="<?php echo $item_id; ?>">
 
-      </div>
-      <button type="submit" class="btn btn-primary form-control">Place bid</button>
-    </form>
-<?php endif ?>
+      <?php elseif ($is_seller): ?>
 
+        <div class="alert alert-info">
+          Sellers cannot bid on their own items.
+        </div>
 
+      <?php elseif ($_SESSION['account_type'] !== "buyer"): ?>
+
+        <div class="alert alert-info">
+          Only buyers can place bids.
+        </div>
+
+      <?php elseif ($can_bid): ?>
+
+        <form method="POST" action="place_bid.php">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">£</span>
+            </div>
+            <input
+              type="number"
+              class="form-control"
+              id="bid"
+              name="bid_amount"
+              min="<?php echo $current_price; ?>"
+              step="1"
+              required
+            >
+            <input type="hidden" name="auction_id" value="<?php echo $auction_id; ?>">
+            <input type="hidden" name="item_id" value="<?php echo $item_id; ?>">
+          </div>
+
+          <button type="submit" class="btn btn-primary form-control mt-2">
+            Place bid
+          </button>
+        </form>
+
+      <?php endif;  ?>
+
+    <?php endif;  ?>
 
   </div> <!-- End of right col with bidding info -->
+
 
 </div> <!-- End of row #2 -->
 
@@ -195,11 +254,16 @@ $num_bids = $result3->fetch_assoc()['count_bids'];
 
 <?php include_once("footer.php")?>
 
-
 <script> 
 // JavaScript functions: addToWatchlist and removeFromWatchlist.
+var isLoggedIn = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;
 
 function addToWatchlist(button) {
+  if (!isLoggedIn) {
+    alert("Please log in to add items to your watchlist.");
+    $('#loginModal').modal('show');
+    return;
+  }
   console.log("These print statements are helpful for debugging btw");
 
   // This performs an asynchronous call to a PHP function using POST method.
@@ -213,6 +277,11 @@ function addToWatchlist(button) {
         // Callback function for when call is successful and returns obj
         console.log("Success");
         var objT = obj.trim();
+
+        if (objT === "not_logged_in") {
+                $('#loginModal').modal('show');
+                return;
+        }
  
         if (objT == "success") {
           $("#watch_nowatch").hide();

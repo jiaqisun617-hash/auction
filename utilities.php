@@ -1,6 +1,12 @@
 <?php
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
+function hasRole($role) {
+    return isset($_SESSION['roles']) && in_array($role, $_SESSION['roles']);
+}
 
 // display_time_remaining:
 

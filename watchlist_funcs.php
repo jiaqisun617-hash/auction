@@ -1,11 +1,16 @@
  <?php
 session_start();
+require_once("database.php");
 
+if (!isset($_SESSION['user_id'])) {
+    echo "not_logged_in";
+    exit();
+}
 
 if (!isset($_POST['functionname']) || !isset($_POST['arguments'])) {
   return;
 }
-require_once("database.php");
+
 $conn = connectDB();
 // Extract arguments from the POST variables:
 $auction_id = $_POST['arguments'][0];

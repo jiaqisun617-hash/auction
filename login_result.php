@@ -1,5 +1,3 @@
-
-
 <!-- // // TODO: Extract $_POST variables, check they're OK, and attempt to login.
 // // Notify user of success/failure and redirect/give navigation options.
 
@@ -36,13 +34,33 @@ if ($row = $result->fetch_assoc()) {
     
     if (password_verify($password, $row['password_hash'])) {
 
-
         $_SESSION['logged_in'] = true;
         $_SESSION['username'] = $row['username'];
         $_SESSION['account_type'] = $row['account_type'];
         $_SESSION['user_id'] = $row['user_id']; 
 
-    
+        //read role from userrole//
+        // changes start//
+        $role_sql = "
+            SELECT role.role_name 
+            FROM role
+            JOIN userrole ON role.role_id = userrole.role_id
+            WHERE userrole.user_id = ?
+        ";
+        $stmt2 = $conn->prepare($role_sql);
+        $stmt2->bind_param("i", $row['user_id']);
+        $stmt2->execute();
+        $role_result = $stmt2->get_result();
+
+        $roles = [];
+        while ($r = $role_result->fetch_assoc()) {
+            $roles[] = $r['role_name'];
+        }
+
+        $_SESSION['roles'] = $roles;
+        //changes end//
+
+
         echo('<div class="text-center mt-5" style="font-size:20px;">Welcome, ' 
               . htmlspecialchars($row['username']) . 
               '! You are now logged in. Redirecting...</div>');
