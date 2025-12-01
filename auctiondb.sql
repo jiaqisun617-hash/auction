@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Nov 13, 2025 at 11:56 AM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- 主机： localhost
+-- 生成日期： 2025-11-29 02:10:35
+-- 服务器版本： 10.4.28-MariaDB
+-- PHP 版本： 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `auctiondb`
+-- 数据库： `auctiondb`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `auction`
+-- 表的结构 `auction`
 --
 
 CREATE TABLE `auction` (
@@ -38,7 +38,7 @@ CREATE TABLE `auction` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `auction`
+-- 转存表中的数据 `auction`
 --
 
 INSERT INTO `auction` (`auction_id`, `item_id`, `start_price`, `reserve_price`, `start_time`, `end_time`, `status`) VALUES
@@ -48,7 +48,7 @@ INSERT INTO `auction` (`auction_id`, `item_id`, `start_price`, `reserve_price`, 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `bid`
+-- 表的结构 `bid`
 --
 
 CREATE TABLE `bid` (
@@ -62,7 +62,7 @@ CREATE TABLE `bid` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `category`
+-- 表的结构 `category`
 --
 
 CREATE TABLE `category` (
@@ -70,10 +70,38 @@ CREATE TABLE `category` (
   `category_name` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- 转存表中的数据 `category`
+--
+
+INSERT INTO `category` (`category_id`, `category_name`) VALUES
+(1, 'Electronics'),
+(2, 'Fashion'),
+(3, 'Home & Kitchen'),
+(4, 'Books'),
+(5, 'Toys'),
+(6, 'Sports'),
+(7, 'Collectibles'),
+(8, 'Beauty'),
+(9, 'Grocery'),
+(10, 'Pet Supplies');
+
 -- --------------------------------------------------------
 
 --
--- Table structure for table `item`
+-- 表的结构 `image`
+--
+
+CREATE TABLE `image` (
+  `id` int(11) NOT NULL,
+  `auction_id` int(11) NOT NULL,
+  `path` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `item`
 --
 
 CREATE TABLE `item` (
@@ -87,7 +115,7 @@ CREATE TABLE `item` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `item`
+-- 转存表中的数据 `item`
 --
 
 INSERT INTO `item` (`item_id`, `seller_id`, `category_id`, `title`, `description`, `condition`, `date_created`) VALUES
@@ -97,7 +125,7 @@ INSERT INTO `item` (`item_id`, `seller_id`, `category_id`, `title`, `description
 -- --------------------------------------------------------
 
 --
--- Table structure for table `role`
+-- 表的结构 `role`
 --
 
 CREATE TABLE `role` (
@@ -105,10 +133,19 @@ CREATE TABLE `role` (
   `role_name` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- 转存表中的数据 `role`
+--
+
+INSERT INTO `role` (`role_id`, `role_name`) VALUES
+(3, 'admin'),
+(1, 'buyer'),
+(2, 'seller');
+
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user`
+-- 表的结构 `user`
 --
 
 CREATE TABLE `user` (
@@ -121,16 +158,17 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `user`
+-- 转存表中的数据 `user`
 --
 
 INSERT INTO `user` (`user_id`, `username`, `email`, `password_hash`, `account_type`, `created_at`) VALUES
-(1, '', 'jiaqisun617@gmail.com', '$2y$10$YAvdeWYnjh8mQyWOPvjg1uB9a/y4RtppqdkUK5GWbQLGTMZkSiHwO', 'buyer', '2025-11-12 19:07:10');
+(1, '', 'jiaqisun617@gmail.com', '$2y$10$YAvdeWYnjh8mQyWOPvjg1uB9a/y4RtppqdkUK5GWbQLGTMZkSiHwO', 'buyer', '2025-11-12 19:07:10'),
+(2, 'TestBuyer', 'TestBuyer@gmail.com', '$2y$10$ia4nS7kT8Tpw2YGUgqc0su74B9D3edUAooHU0eBqLW671Hzvjj/wm', 'buyer', '2025-11-29 00:51:34');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `userrole`
+-- 表的结构 `userrole`
 --
 
 CREATE TABLE `userrole` (
@@ -139,18 +177,41 @@ CREATE TABLE `userrole` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Indexes for dumped tables
+-- 转存表中的数据 `userrole`
+--
+
+INSERT INTO `userrole` (`user_id`, `role_id`) VALUES
+(1, 1),
+(1, 2),
+(1, 3),
+(2, 1);
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `watchlist`
+--
+
+CREATE TABLE `watchlist` (
+  `user_id` int(11) NOT NULL,
+  `auction_id` int(11) NOT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `notify_email` tinyint(1) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- 转储表的索引
 --
 
 --
--- Indexes for table `auction`
+-- 表的索引 `auction`
 --
 ALTER TABLE `auction`
   ADD PRIMARY KEY (`auction_id`),
   ADD KEY `item_id` (`item_id`);
 
 --
--- Indexes for table `bid`
+-- 表的索引 `bid`
 --
 ALTER TABLE `bid`
   ADD PRIMARY KEY (`bid_id`),
@@ -158,13 +219,20 @@ ALTER TABLE `bid`
   ADD KEY `bidder_id` (`bidder_id`);
 
 --
--- Indexes for table `category`
+-- 表的索引 `category`
 --
 ALTER TABLE `category`
   ADD PRIMARY KEY (`category_id`);
 
 --
--- Indexes for table `item`
+-- 表的索引 `image`
+--
+ALTER TABLE `image`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `auction_id` (`auction_id`);
+
+--
+-- 表的索引 `item`
 --
 ALTER TABLE `item`
   ADD PRIMARY KEY (`item_id`),
@@ -172,14 +240,14 @@ ALTER TABLE `item`
   ADD KEY `category_id` (`category_id`);
 
 --
--- Indexes for table `role`
+-- 表的索引 `role`
 --
 ALTER TABLE `role`
   ADD PRIMARY KEY (`role_id`),
   ADD UNIQUE KEY `role_name` (`role_name`);
 
 --
--- Indexes for table `user`
+-- 表的索引 `user`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`user_id`),
@@ -187,111 +255,110 @@ ALTER TABLE `user`
   ADD UNIQUE KEY `email` (`email`);
 
 --
--- Indexes for table `userrole`
+-- 表的索引 `userrole`
 --
 ALTER TABLE `userrole`
   ADD PRIMARY KEY (`user_id`,`role_id`),
   ADD KEY `role_id` (`role_id`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- 表的索引 `watchlist`
+--
+ALTER TABLE `watchlist`
+  ADD PRIMARY KEY (`user_id`,`auction_id`),
+  ADD KEY `auction_id` (`auction_id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
 --
 
 --
--- AUTO_INCREMENT for table `auction`
+-- 使用表AUTO_INCREMENT `auction`
 --
 ALTER TABLE `auction`
   MODIFY `auction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `bid`
+-- 使用表AUTO_INCREMENT `bid`
 --
 ALTER TABLE `bid`
   MODIFY `bid_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `category`
+-- 使用表AUTO_INCREMENT `category`
 --
 ALTER TABLE `category`
-  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- AUTO_INCREMENT for table `item`
+-- 使用表AUTO_INCREMENT `image`
+--
+ALTER TABLE `image`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- 使用表AUTO_INCREMENT `item`
 --
 ALTER TABLE `item`
   MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `role`
+-- 使用表AUTO_INCREMENT `role`
 --
 ALTER TABLE `role`
-  MODIFY `role_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `role_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT for table `user`
+-- 使用表AUTO_INCREMENT `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- Constraints for dumped tables
+-- 限制导出的表
 --
 
 --
--- Constraints for table `auction`
+-- 限制表 `auction`
 --
 ALTER TABLE `auction`
   ADD CONSTRAINT `auction_ibfk_1` FOREIGN KEY (`item_id`) REFERENCES `item` (`item_id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `bid`
+-- 限制表 `bid`
 --
 ALTER TABLE `bid`
   ADD CONSTRAINT `bid_ibfk_1` FOREIGN KEY (`auction_id`) REFERENCES `auction` (`auction_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `bid_ibfk_2` FOREIGN KEY (`bidder_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `item`
+-- 限制表 `image`
+--
+ALTER TABLE `image`
+  ADD CONSTRAINT `image_ibfk_1` FOREIGN KEY (`auction_id`) REFERENCES `auction` (`auction_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- 限制表 `item`
 --
 ALTER TABLE `item`
   ADD CONSTRAINT `item_ibfk_1` FOREIGN KEY (`seller_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `item_ibfk_2` FOREIGN KEY (`category_id`) REFERENCES `category` (`category_id`) ON DELETE SET NULL;
 
 --
--- Constraints for table `userrole`
+-- 限制表 `userrole`
 --
 ALTER TABLE `userrole`
   ADD CONSTRAINT `userrole_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `userrole_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`) ON DELETE CASCADE;
+
+--
+-- 限制表 `watchlist`
+--
+ALTER TABLE `watchlist`
+  ADD CONSTRAINT `watchlist_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `watchlist_ibfk_2` FOREIGN KEY (`auction_id`) REFERENCES `auction` (`auction_id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
-
--- 新增watchlist表，需要在myadmin里面手动插入
-CREATE TABLE watchlist (
-    user_id INT NOT NULL,
-    auction_id INT NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    notify_email BOOLEAN DEFAULT 0,
-
-    PRIMARY KEY (user_id, auction_id),
-
-    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (auction_id) REFERENCES auction(auction_id) ON DELETE CASCADE
-);
-
--- 新增categories表内内容，逻辑为前端从后端调出数据
-INSERT INTO category (category_name) VALUES
-('Electronics'),
-('Fashion'),
-('Home & Kitchen'),
-('Books'),
-('Toys'),
-('Sports'),
-('Collectibles'),
-('Beauty'),
-('Grocery'),
-('Pet Supplies');

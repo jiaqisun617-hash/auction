@@ -1,5 +1,5 @@
-<?php include_once("header.php")?>
 <?php require("utilities.php")?>
+<?php include_once("header.php")?>
 
 <div class="container">
 
@@ -19,7 +19,7 @@
     include_once("footer.php");
     exit();
   }
-    if ($_SESSION['account_type'] !== 'seller') {
+    if (!hasRole('seller')) {
     echo '<div class="alert alert-danger">Only sellers can view My Listings.</div>';
     include_once("footer.php");
     exit();

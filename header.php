@@ -1,10 +1,6 @@
 <?php
-  // FIXME: At the moment, I've allowed these values to be set manually.
-  // But eventually, with a database, these should be set automatically
-  // ONLY after the user's login credentials have been verified via a 
-  // database query.
-  session_start();
-
+require_once("utilities.php");
+echo "<!-- DEBUG: user_id=" . ($_SESSION['user_id'] ?? 'NO SESSION') . " -->";
 ?>
 
 
@@ -124,9 +120,8 @@
      style="background:#ffffff; border-bottom:1px solid #eaeaea; padding:14px 32px;">
 
   <!-- Left: Logo -->
-  <a class="navbar-brand design" href="browse.php" 
-     style="font-size:24px; font-weight:700; color:#333; margin-right:40px">
-     
+  <a class="navbar-brand" href="index.php" 
+     style="font-size:24px; font-weight:700; color:#333; margin-right:40px;">
      Princess Auction
   </a>
 
@@ -138,27 +133,22 @@
         <a class="nav-link" href="browse.php" style="color:#333;">Browse</a>
       </li>
 
-      <?php
-      if (isset($_SESSION['account_type']) && $_SESSION['account_type'] == 'buyer') {
-          echo '
-            <li class="nav-item"><a class="nav-link" href="mybids.php" style="color:#333;">My Bids</a></li>
-            <li class="nav-item"><a class="nav-link" href="mywatchlist.php" style="color:#333;">My Watchlist</a></li>
-            <li class="nav-item"><a class="nav-link" href="recommendations.php" style="color:#333;">Recommended</a></li>
-          ';
-      }
+      <?php if (hasRole('buyer')): ?>
+    <li class="nav-item"><a class="nav-link" href="mybids.php" style="color:#333;">My Bids</a></li>
+    <li class="nav-item"><a class="nav-link" href="mywatchlist.php" style="color:#333;">My Watchlist</a></li>
+    <li class="nav-item"><a class="nav-link" href="recommendations.php" style="color:#333;">Recommended</a></li>
+<?php endif; ?>
 
-      if (isset($_SESSION['account_type']) && $_SESSION['account_type'] == 'seller') {
-          echo '
-            <li class="nav-item"><a class="nav-link" href="mylistings.php" style="color:#333;">My Listings</a></li>
-            <li class="nav-item">
-                <a class="nav-link" href="create_auction.php"
-                   style="padding:6px 14px; border:2px solid #333; border-radius:6px; font-weight:600; color:#333;">
-                    + Create Auction
-                </a>
-            </li>
-          ';
-      }
-      ?>
+      <?php if (hasRole('seller')): ?>
+    <li class="nav-item"><a class="nav-link" href="mylistings.php" style="color:#333;">My Listings</a></li>
+    <li class="nav-item">
+        <a class="nav-link" href="create_auction.php"
+           style="padding:6px 14px; border:2px solid #333; border-radius:6px; font-weight:600; color:#333;">
+            + Create Auction
+        </a>
+    </li>
+<?php endif; ?>
+
     </ul>
   </div>
 

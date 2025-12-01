@@ -1,61 +1,13 @@
-<?php include_once("header.php")?>
-
 <?php require("utilities.php")?>
-
 <?php require_once("database.php");
 $conn = connectDB()?>
+<?php include_once("header.php")?>
 
 
 <?php if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] != true) { ?>
 
 
-<!-- Hero Banner -->
-<div class="hero-section" 
-     style="
-       background: url('https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?auto=format&w=1600') 
-       center/cover no-repeat;
-       height: 420px;
-      
-       display: flex;
-       align-items: center;
-       padding: 40px;
-       color: white;
-     ">
-  <div>
-    <h1 style="font-size: 40px; font-weight: 700; line-height: 1.2;"
-    class="design">
-      Start Your Auction
-    </h1>
-    <p style="font-size: 18px; margin: 10px 0 24px;"
-    class="design">
-      Find unique items with best value
-    </p>
-    <a href="browse.php" 
-       style="
-         background: white;
-         padding: 12px 24px;
-         border-radius: 8px;
-         color: #333;
-         font-weight: 600;
-         text-decoration: none;
-         margin-right: 12px;
-       "
-       class="design">
-       Shop Now
-     </a>
-    <a href="about.php"
-       style="
-         border: 2px solid white;
-         padding: 10px 22px;
-         border-radius: 8px;
-         color: white;
-         font-weight: 600;
-         text-decoration: none;
-       "
-       class="design">
-       About Us
-     </a>
-  </div>
+
 </div>
 
       </a>
@@ -429,6 +381,7 @@ $num_bids = $count_row['count_bids'];
 
 // 放图片
 
+
 $sql_img = "SELECT path FROM image WHERE item_id = ? ORDER BY sort_order ASC LIMIT 1";
 
 $stmt_img = $connection->prepare($sql_img);
@@ -441,10 +394,8 @@ $res_img = $stmt_img->get_result();
 
 $img_path = $res_img->fetch_assoc()['path'] ?? 'uploads/default.jpg';
 
-
-
-
-
+          if (empty($img_path))
+          $img_path = 'uploads/default.jpg';
          
 
          
@@ -591,10 +542,6 @@ $img_path = $res_img->fetch_assoc()['path'] ?? 'uploads/default.jpg';
 
 </nav>
 
-
-
 </div>
-
-
 
 <?php include_once("footer.php")?>
