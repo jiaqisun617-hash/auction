@@ -1,8 +1,26 @@
 <?php
 require_once("utilities.php");
-echo "<!-- DEBUG: user_id=" . ($_SESSION['user_id'] ?? 'NO SESSION') . " -->";
-?>
 
+// 如果还没有数据库连接，这里连一次（避免和已有代码冲突）
+if (!isset($connection)) {
+    require_once("database.php");
+    $connection = connectDB();
+}
+
+// 读取当前用户余额（如果已登录）
+$user_balance = null;
+if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true && isset($_SESSION['user_id'])) {
+    $uid = (int)$_SESSION['user_id'];
+
+    if ($stmt = $connection->prepare("SELECT balance FROM user WHERE user_id = ?")) {
+        $stmt->bind_param("i", $uid);
+        $stmt->execute();
+        $stmt->bind_result($user_balance);
+        $stmt->fetch();
+        $stmt->close();
+    }
+}
+?>
 
 <!doctype html>
 <html lang="en">
@@ -20,95 +38,91 @@ echo "<!-- DEBUG: user_id=" . ($_SESSION['user_id'] ?? 'NO SESSION') . " -->";
       font-family: 'Playfair Display', serif !important;
       letter-spacing: 0.5px;  
   }
-</style>
-
-
-
+  </style>
 
   <!-- Custom CSS file -->
   <link rel="stylesheet" href="css/custom.css">
 
   <title>Princess Auction <!--CHANGEME!--></title>
+
   <style>
-/* 整个卡片 hover 上浮 */
-.auction-card {
-    transition: all 0.25s ease;
-}
+  /* 整个卡片 hover 上浮 */
+  .auction-card {
+      transition: all 0.25s ease;
+  }
 
-.auction-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.15);
-}
+  .auction-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.15);
+  }
 
-/* 图片变暗 */
-.auction-card img {
-    transition: all 0.25s ease;
-}
+  /* 图片变暗 */
+  .auction-card img {
+      transition: all 0.25s ease;
+  }
 
-.auction-card:hover img {
-    filter: brightness(70%);
-}
+  .auction-card:hover img {
+      filter: brightness(70%);
+  }
 
-.search-bar-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
+  .search-bar-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+  }
 
-.search-input-group {
-    height: 44px;
-}
+  .search-input-group {
+      height: 44px;
+  }
 
-.search-input-group .input-group-text {
-    background: #fff;
-    border: 1px solid #dcdcdc;
-    border-right: none;
-    border-radius: 10px 0 0 10px;
-}
+  .search-input-group .input-group-text {
+      background: #fff;
+      border: 1px solid #dcdcdc;
+      border-right: none;
+      border-radius: 10px 0 0 10px;
+  }
 
-.search-input-group input {
-    height: 44px;
-    border: 1px solid #dcdcdc;
-    border-left: none;
-    border-radius: 0 10px 10px 0;
-    font-size: 15px;
-}
+  .search-input-group input {
+      height: 44px;
+      border: 1px solid #dcdcdc;
+      border-left: none;
+      border-radius: 0 10px 10px 0;
+      font-size: 15px;
+  }
 
-.search-select {
-    height: 44px;
-    border-radius: 10px;
-    border: 1px solid #dcdcdc;
-    background: #fafafa;
-    font-size: 14px;       
-    color: #555;           
-    padding: 0 14px;
-    width: auto;      
-   min-width: 150px;       
-    cursor: pointer;
-}
+  .search-select {
+      height: 44px;
+      border-radius: 10px;
+      border: 1px solid #dcdcdc;
+      background: #fafafa;
+      font-size: 14px;       
+      color: #555;           
+      padding: 0 14px;
+      width: auto;      
+      min-width: 150px;       
+      cursor: pointer;
+  }
 
-.search-select:hover {
-    background: #f2f2f2;
-}
+  .search-select:hover {
+      background: #f2f2f2;
+  }
 
+  .search-btn {
+      height: 44px;
+      width: 110px;
+      background: #333;
+      color: white;
+      border-radius: 10px;
+      font-weight: 600;
+      border: none;
+      transition: 0.25s;
+  }
 
-.search-btn {
-    height: 44px;
-    width: 110px;
-    background: #333;
-    color: white;
-    border-radius: 10px;
-    font-weight: 600;
-    border: none;
-    transition: 0.25s;
-}
-
-.search-btn:hover {
-    background: #111;
-    transform: translateY(-2px);
-}
-
-</style>
+  .search-btn:hover {
+      background: #111;
+      transform: translateY(-2px);
+  }
+  </style>
 
 </head>
 
@@ -134,46 +148,53 @@ echo "<!-- DEBUG: user_id=" . ($_SESSION['user_id'] ?? 'NO SESSION') . " -->";
       </li>
 
       <?php if (hasRole('buyer')): ?>
-    <li class="nav-item"><a class="nav-link" href="mybids.php" style="color:#333;">My Bids</a></li>
-    <li class="nav-item"><a class="nav-link" href="mywatchlist.php" style="color:#333;">My Watchlist</a></li>
-    <li class="nav-item"><a class="nav-link" href="recommendations.php" style="color:#333;">Recommended</a></li>
-<?php endif; ?>
+        <li class="nav-item"><a class="nav-link" href="mybids.php" style="color:#333;">My Bids</a></li>
+        <li class="nav-item"><a class="nav-link" href="mywatchlist.php" style="color:#333;">My Watchlist</a></li>
+        <li class="nav-item"><a class="nav-link" href="recommendations.php" style="color:#333;">Recommended</a></li>
+      <?php endif; ?>
 
       <?php if (hasRole('seller')): ?>
-    <li class="nav-item"><a class="nav-link" href="mylistings.php" style="color:#333;">My Listings</a></li>
-    <li class="nav-item">
-        <a class="nav-link" href="create_auction.php"
-           style="padding:6px 14px; border:2px solid #333; border-radius:6px; font-weight:600; color:#333;">
-            + Create Auction
-        </a>
-    </li>
-<?php endif; ?>
+        <li class="nav-item"><a class="nav-link" href="mylistings.php" style="color:#333;">My Listings</a></li>
+        <li class="nav-item">
+            <a class="nav-link" href="create_auction.php"
+               style="padding:6px 14px; border:2px solid #333; border-radius:6px; font-weight:600; color:#333;">
+                + Create Auction
+            </a>
+        </li>
+      <?php endif; ?>
 
     </ul>
   </div>
 
-  <!-- Right: User / Login -->
+  <!-- Right: User / Login / Balance / Top-up -->
   <ul class="navbar-nav ml-auto" style="font-size:16px; gap:16px;">
-    <?php
-    if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
-        echo '
+    <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true): ?>
         <li class="nav-item">
-            <span class="nav-link" style="color:#555;">Welcome, <b>' . htmlspecialchars($_SESSION['username']) . '</b></span>
+          <span class="nav-link" style="color:#555;">
+            Welcome, <b><?php echo htmlspecialchars($_SESSION['username']); ?></b>
+            <?php if ($user_balance !== null): ?>
+              &nbsp;
+              <span style="font-size:14px; color:#777;">
+                Balance: £<?php echo number_format($user_balance, 2); ?>
+              </span>
+            <?php endif; ?>
+          </span>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="logout.php" style="color:#333;">Logout</a>
-        </li>';
-    } else {
-        echo '
+          <a class="nav-link" href="topup.php" style="color:#333;">Top-up</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="logout.php" style="color:#333;">Logout</a>
+        </li>
+    <?php else: ?>
         <li class="nav-item">
             <button type="button" class="btn btn-outline-dark"
                     data-toggle="modal" data-target="#loginModal"
                     style="padding:6px 14px; border-radius:6px;">
               Login
             </button>
-        </li>';
-    }
-    ?>
+        </li>
+    <?php endif; ?>
   </ul>
 
 </nav>
