@@ -9,46 +9,24 @@ function hasRole($role) {
 }
 
 // display_time_remaining:
-
 // Helper function to help figure out what time to display
-
 function display_time_remaining($interval) {
 
-
-
     if ($interval->days == 0 && $interval->h == 0) {
-
-      // Less than one hour remaining: print mins + seconds:
-
-      $time_remaining = $interval->format('%im %Ss');
-
+        // Less than one hour remaining: print mins + seconds:
+        $time_remaining = $interval->format('%im %Ss');
     }
-
     else if ($interval->days == 0) {
-
-      // Less than one day remaining: print hrs + mins:
-
-      $time_remaining = $interval->format('%hh %im');
-
+        // Less than one day remaining: print hrs + mins:
+        $time_remaining = $interval->format('%hh %im');
     }
-
     else {
-
-      // At least one day remaining: print days + hrs:
-
-      $time_remaining = $interval->format('%ad %hh');
-
+        // At least one day remaining: print days + hrs:
+        $time_remaining = $interval->format('%ad %hh');
     }
 
-
-
-  return $time_remaining;
-
-
-
+    return $time_remaining;
 }
-
-
 
 function print_listing_li($item_id, $title, $desc, $price, $num_bids, $end_time, $img_path)
 {
@@ -114,22 +92,21 @@ function print_listing_li($item_id, $title, $desc, $price, $num_bids, $end_time,
       >
 
         <!-- Status Tag -->
-    <div style="
-  position:absolute;
-  top:12px;
-  left:12px;
-  padding:3px 10px;
-  font-size:11px;
-  font-weight:600;
-  letter-spacing:1.2px;
-  text-transform:uppercase;
-  background:rgba(255,255,255,0.7);
-  color:' . $label_color[$status] . ';
-  border:1px solid rgba(0, 0, 0, 0.15);
-  border-radius:6px;
-  backdrop-filter:blur(6px);
-">
-
+        <div style="
+          position:absolute;
+          top:12px;
+          left:12px;
+          padding:3px 10px;
+          font-size:11px;
+          font-weight:600;
+          letter-spacing:1.2px;
+          text-transform:uppercase;
+          background:rgba(255,255,255,0.7);
+          color:' . $label_color[$status] . ';
+          border:1px solid rgba(0, 0, 0, 0.15);
+          border-radius:6px;
+          backdrop-filter:blur(6px);
+        ">
           ' . $status . '
         </div>
 
@@ -172,4 +149,108 @@ function print_listing_li($item_id, $title, $desc, $price, $num_bids, $end_time,
       </a>
     </div>
     ';
+}
+
+/* -------------------------------------------------------------------
+   Email helpers
+   ------------------------------------------------------------------- */
+
+/**
+ * Send an email using PHP mail().
+ *
+ * @param string $to      Recipient email address
+ * @param string $subject Email subject
+ * @param string $body    Plain text email body
+ * @return bool           true on success, false on failure
+ */
+function sendEmail($to, $subject, $body) {
+    // Change these to match your setup
+    $fromName  = "Princess Auction";
+    $fromEmail = "jiaqisun617@gmail.com";
+
+    $headers  = "From: {$fromName} <{$fromEmail}>\r\n";
+    $headers .= "Reply-To: {$fromEmail}\r\n";
+    $headers .= "X-Mailer: PHP/" . phpversion() . "\r\n";
+    $headers .= "Content-Type: text/plain; charset=utf-8\r\n";
+
+    return mail($to, $subject, $body, $headers);
+}
+
+/**
+ * Get a user's email address by user_id.
+ *
+ * @param mysqli $conn
+ * @param int    $user_id
+ * @return string|null  email string if found, otherwise null
+ */
+function getUserEmailById($conn, $user_id) {
+    $sql = "SELECT email FROM user WHERE user_id = ?";
+
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        return null;
+    }
+
+    $stmt->bind_param("i", $user_id);
+    if (!$stmt->execute()) {
+        $stmt->close();
+        return null;
+    }
+
+    $result = $stmt->get_result();
+    if (!$result || $result->num_rows === 0) {
+        $stmt->close();
+        return null;
+    }
+
+    $row = $result->fetch_assoc();
+    $stmt->close();
+
+    if (!isset($row['email'])) {
+        return null;
+    }
+
+    return $row['email'];
+}
+
+/**
+ * Get item title/name by auction_id (for email subjects).
+ *
+ * IMPORTANT: if your item table column is not item_name
+ * (e.g. it is called 'title' or 'name'), change i.item_name
+ * below to the correct column name and keep "AS title".
+ */
+function getItemTitleByAuctionId($conn, $auction_id) {
+    $sql = "
+        SELECT i.title AS title
+        FROM auction a
+        JOIN item i ON a.item_id = i.item_id
+        WHERE a.auction_id = ?
+    ";
+
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        return null;
+    }
+
+    $stmt->bind_param("i", $auction_id);
+    if (!$stmt->execute()) {
+        $stmt->close();
+        return null;
+    }
+
+    $result = $stmt->get_result();
+    if (!$result || $result->num_rows === 0) {
+        $stmt->close();
+        return null;
+    }
+
+    $row = $result->fetch_assoc();
+    $stmt->close();
+
+    if (!isset($row['title'])) {
+        return null;
+    }
+
+    return $row['title'];
 }

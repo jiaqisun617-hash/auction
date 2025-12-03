@@ -1,13 +1,16 @@
 <?php
 require_once("utilities.php");
 
-// 如果还没有数据库连接，这里连一次（避免和已有代码冲突）
+// If there is no DB connection yet, connect once here
 if (!isset($connection)) {
     require_once("database.php");
     $connection = connectDB();
 }
 
-// 读取当前用户余额（如果已登录）
+// Current URL (used for redirect after login / top-up)
+$current_url = $_SERVER['REQUEST_URI'] ?? 'index.php';
+
+// Read current user balance (if logged in)
 $user_balance = null;
 if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true && isset($_SESSION['user_id'])) {
     $uid = (int)$_SESSION['user_id'];
@@ -28,7 +31,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true && isset($_S
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   
-  <!-- 引入Bootstrap和icon和字体 -->
+  <!-- Bootstrap, icons, fonts -->
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -43,45 +46,36 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true && isset($_S
   <!-- Custom CSS file -->
   <link rel="stylesheet" href="css/custom.css">
 
-  <title>Princess Auction <!--CHANGEME!--></title>
+  <title>Princess Auction</title>
 
   <style>
-  /* 整个卡片 hover 上浮 */
   .auction-card {
       transition: all 0.25s ease;
   }
-
   .auction-card:hover {
       transform: translateY(-6px);
       box-shadow: 0 10px 22px rgba(0, 0, 0, 0.15);
   }
-
-  /* 图片变暗 */
   .auction-card img {
       transition: all 0.25s ease;
   }
-
   .auction-card:hover img {
       filter: brightness(70%);
   }
-
   .search-bar-wrapper {
       display: flex;
       align-items: center;
       gap: 16px;
   }
-
   .search-input-group {
       height: 44px;
   }
-
   .search-input-group .input-group-text {
       background: #fff;
       border: 1px solid #dcdcdc;
       border-right: none;
       border-radius: 10px 0 0 10px;
   }
-
   .search-input-group input {
       height: 44px;
       border: 1px solid #dcdcdc;
@@ -89,7 +83,6 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true && isset($_S
       border-radius: 0 10px 10px 0;
       font-size: 15px;
   }
-
   .search-select {
       height: 44px;
       border-radius: 10px;
@@ -102,11 +95,9 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true && isset($_S
       min-width: 150px;       
       cursor: pointer;
   }
-
   .search-select:hover {
       background: #f2f2f2;
   }
-
   .search-btn {
       height: 44px;
       width: 110px;
@@ -117,7 +108,6 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true && isset($_S
       border: none;
       transition: 0.25s;
   }
-
   .search-btn:hover {
       background: #111;
       transform: translateY(-2px);
@@ -181,7 +171,11 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true && isset($_S
           </span>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="topup.php" style="color:#333;">Top-up</a>
+          <a class="nav-link"
+             href="topup.php?return=<?php echo urlencode($current_url); ?>"
+             style="color:#333;">
+            Top-up
+          </a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="logout.php" style="color:#333;">Logout</a>
@@ -200,7 +194,6 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true && isset($_S
 </nav>
 
 
-
 <!-- Login modal -->
 <div class="modal fade" id="loginModal">
   <div class="modal-dialog">
@@ -214,6 +207,10 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true && isset($_S
       <!-- Modal body -->
       <div class="modal-body">
         <form method="POST" action="login_result.php">
+          <!-- redirect back to current page after login -->
+          <input type="hidden" name="redirect_url"
+                 value="<?php echo htmlspecialchars($current_url); ?>">
+
           <div class="form-group">
             <label for="email">Email</label>
             <input type="text" class="form-control" id="email" name="email" placeholder="Email">
