@@ -9,7 +9,6 @@
         <h1>Start Your Auction</h1>
         <p>Find unique items with best value</p>
 
-        <!-- ★ 把按钮放在 hero-content 内部 ★ -->
         <a href="browse.php" class="hero-btn">Shop Now</a>
     </div>
 </div>
@@ -18,7 +17,7 @@
 .hero-section {
     position: relative;
     width: 100vw;
-    height: 100vh; /* 全屏 */
+    height: 100vh; 
     display: flex;
     align-items: center;
     padding-left: 80px;
@@ -49,7 +48,7 @@
 
 .hero-content p {
     font-size: 22px;
-    margin-bottom: 30px; /* ★ 给按钮预留空间 */
+    margin-bottom: 30px; 
 }
 
 .hero-btn {

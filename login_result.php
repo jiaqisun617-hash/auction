@@ -7,12 +7,11 @@ $password = $_POST['password'] ?? '';
 // 1. Decide where to go after successful login
 $redirect = $_POST['redirect_url'] ?? 'index.php';
 
-// (1) 不允许外部完整 URL，统一回首页
+
 if (strpos($redirect, 'http') === 0) {
     $redirect = 'index.php';
 }
 
-// (2) 如果是处理脚本（比如注册处理页），也改成首页避免白屏
 if (strpos($redirect, 'process_registration.php') !== false) {
     $redirect = 'index.php';
 }
@@ -30,13 +29,12 @@ if ($row = $result->fetch_assoc()) {
 
     if (password_verify($password, $row['password_hash'])) {
 
-        // --- 写入 session ---
         $_SESSION['logged_in']    = true;
         $_SESSION['username']     = $row['username'];
         $_SESSION['account_type'] = $row['account_type'];
         $_SESSION['user_id']      = $row['user_id']; 
 
-        // --- 读取角色，供 hasRole() 使用 ---
+        // Fetch user roles
         $role_sql = "
             SELECT role.role_name 
             FROM role
@@ -54,11 +52,9 @@ if ($row = $result->fetch_assoc()) {
         }
         $_SESSION['roles'] = $roles;
 
-        // --- 显示“欢迎 + 自动跳转”的过渡页面（保留你以前的功能） ---
         $safe_username = htmlspecialchars($row['username'], ENT_QUOTES);
         $safe_redirect = htmlspecialchars($redirect, ENT_QUOTES);
 
-        // 这里用 meta refresh 实现 3s 后跳转，不再用 header() 避免 header 已发送问题
         echo '<!doctype html>
 <html lang="en">
 <head>

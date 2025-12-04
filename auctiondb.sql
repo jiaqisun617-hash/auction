@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- 主机： localhost
--- 生成日期： 2025-12-01 21:11:16
--- 服务器版本： 10.4.28-MariaDB
--- PHP 版本： 8.2.4
+-- 主机： 127.0.0.1
+-- 生成日期： 2025-12-04 00:17:34
+-- 服务器版本： 10.4.32-MariaDB
+-- PHP 版本： 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -50,7 +50,9 @@ INSERT INTO `auction` (`auction_id`, `item_id`, `start_price`, `reserve_price`, 
 (10, 10, 20.00, 4.00, '2025-12-01 18:28:55', '2025-12-04 00:27:00', 'Sched'),
 (11, 11, 200.00, 40.00, '2025-12-01 18:30:35', '2025-12-02 22:29:00', 'Sched'),
 (12, 12, 3000.00, 600.00, '2025-12-01 18:41:22', '2025-12-03 19:40:00', 'Sched'),
-(13, 13, 1000.00, 200.00, '2025-12-01 18:51:53', '2025-12-02 21:51:00', 'Sched');
+(13, 13, 1000.00, 200.00, '2025-12-01 18:51:53', '2025-12-02 21:51:00', 'Sched'),
+(16, 16, 20.00, 4.00, '2025-12-03 18:43:59', '2025-12-03 19:55:00', 'Sched'),
+(17, 17, 50.00, 10.00, '2025-12-03 18:59:40', '2026-01-03 18:59:00', 'Sched');
 
 -- --------------------------------------------------------
 
@@ -76,7 +78,13 @@ INSERT INTO `bid` (`bid_id`, `auction_id`, `bidder_id`, `bid_amount`, `bid_time`
 (3, 4, 4, 52.00, '2025-12-01 00:05:40'),
 (4, 4, 4, 58.00, '2025-12-01 16:00:04'),
 (5, 4, 4, 59.00, '2025-12-01 16:00:23'),
-(6, 4, 4, 60.00, '2025-12-01 16:00:38');
+(6, 4, 4, 60.00, '2025-12-01 16:00:38'),
+(9, 16, 13, 21.00, '2025-12-03 18:46:46'),
+(10, 16, 9, 22.00, '2025-12-03 18:48:46'),
+(11, 16, 13, 25.00, '2025-12-03 18:50:40'),
+(12, 16, 9, 26.00, '2025-12-03 18:52:09'),
+(13, 16, 13, 28.00, '2025-12-03 18:53:10'),
+(14, 8, 13, 540.00, '2025-12-03 18:57:47');
 
 -- --------------------------------------------------------
 
@@ -138,15 +146,22 @@ INSERT INTO `image` (`image_id`, `item_id`, `path`, `sort_order`) VALUES
 (18, 13, 'uploads/item_13_1764615113_0.jpg', 1),
 (19, 13, 'uploads/item_13_1764615113_1.jpg', 2),
 (20, 13, 'uploads/item_13_1764615113_2.jpg', 3),
-(21, 13, 'uploads/item_13_1764615113_3.jpg', 4);
+(21, 13, 'uploads/item_13_1764615113_3.jpg', 4),
+(30, 16, 'uploads/item_16_1764787439_0.jpg', 1),
+(31, 16, 'uploads/item_16_1764787439_1.jpg', 2),
+(32, 16, 'uploads/item_16_1764787439_2.jpg', 3),
+(33, 16, 'uploads/item_16_1764787439_3.jpg', 4),
+(34, 17, 'uploads/item_17_1764788380_0.jpg', 1),
+(35, 17, 'uploads/item_17_1764788380_1.jpg', 2),
+(36, 17, 'uploads/item_17_1764788380_2.jpg', 3);
 
 -- --------------------------------------------------------
 
 --
--- 表的结构 `Item`
+-- 表的结构 `item`
 --
 
-CREATE TABLE `Item` (
+CREATE TABLE `item` (
   `item_id` int(11) NOT NULL,
   `seller_id` int(11) NOT NULL,
   `category_id` int(11) DEFAULT NULL,
@@ -157,10 +172,10 @@ CREATE TABLE `Item` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- 转存表中的数据 `Item`
+-- 转存表中的数据 `item`
 --
 
-INSERT INTO `Item` (`item_id`, `seller_id`, `category_id`, `title`, `description`, `condition`, `date_created`) VALUES
+INSERT INTO `item` (`item_id`, `seller_id`, `category_id`, `title`, `description`, `condition`, `date_created`) VALUES
 (4, 3, 3, 'Chair', 'Wodden Chair', 'Used - Like New', '2025-11-29 01:29:52'),
 (5, 3, 3, 'Chair', 'office chair', 'Used - Good', '2025-11-29 01:37:35'),
 (6, 4, 3, 'Chair', 'White chair', 'Used - Acceptable', '2025-11-29 18:45:04'),
@@ -169,7 +184,9 @@ INSERT INTO `Item` (`item_id`, `seller_id`, `category_id`, `title`, `description
 (10, 3, 6, 'Basketball', 'Wilson Official NBA Collaborative Trendy Tie-Dye Gradient Basketball for College Students, Indoor and Outdoor Use, Size 7', 'Used - Good', '2025-12-01 18:28:55'),
 (11, 3, 7, 'Pink Gemstone Necklace ', 'A striking pear-cut pink gemstone centerpiece, surrounded by a brilliant diamond halo and set on an elegant double-chain design. The necklace features intricate diamond-accented curves, adding sparkle and sophistication.', 'Used - Good', '2025-12-01 18:30:35'),
 (12, 3, 8, 'Scott Walker Special Custom left-handed electric guitar, made in USA; Body: Mahogany with textured', 'Body: Mahogany with textured oxidised copper finish; Neck: three piece maple and walnut; Fretboard: birds eye maple, light surface blemish to second fret; Frets: good; Electrics: working; Hardware: good; Case: original fitted hard case; Weight: 4.12kg', 'Used - Like New', '2025-12-01 18:41:22'),
-(13, 3, 1, 'Iphone 17 Pro', 'iPhone 17 pro 512GB', 'New', '2025-12-01 18:51:53');
+(13, 3, 1, 'Iphone 17 Pro', 'iPhone 17 pro 512GB', 'New', '2025-12-01 18:51:53'),
+(16, 15, 5, 'popmart', 'this is a toy', 'Used - Like New', '2025-12-03 18:43:59'),
+(17, 15, 2, 'Nike Shoes', 'Nike Team Hustle D 11 Kids\' Winter Sports Shoes for Boys and Girls', 'New', '2025-12-03 18:59:40');
 
 -- --------------------------------------------------------
 
@@ -203,18 +220,22 @@ CREATE TABLE `user` (
   `email` varchar(255) NOT NULL,
   `password_hash` varchar(255) NOT NULL,
   `account_type` enum('buyer','seller','admin') DEFAULT 'buyer',
-  `created_at` datetime DEFAULT current_timestamp()
+  `created_at` datetime DEFAULT current_timestamp(),
+  `balance` decimal(10,2) NOT NULL DEFAULT 0.00
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- 转存表中的数据 `user`
 --
 
-INSERT INTO `user` (`user_id`, `username`, `email`, `password_hash`, `account_type`, `created_at`) VALUES
-(1, '', 'jiaqisun617@gmail.com', '$2y$10$YAvdeWYnjh8mQyWOPvjg1uB9a/y4RtppqdkUK5GWbQLGTMZkSiHwO', 'buyer', '2025-11-12 19:07:10'),
-(2, 'TestBuyer', 'TestBuyer@gmail.com', '$2y$10$ia4nS7kT8Tpw2YGUgqc0su74B9D3edUAooHU0eBqLW671Hzvjj/wm', 'buyer', '2025-11-29 00:51:34'),
-(3, 'TestSeller', 'TestSeller@gmail.com', '$2y$10$15tgS.9pAT7FtuZ7.M60S.CPWyO2MFsILIILx1.fvVfs9Z.Tbmf6i', 'seller', '2025-11-29 01:24:00'),
-(4, 'U1', 'wu029385@gmail.com', '$2y$10$g2DDjQbYXph7/Isor4W6XuFgbXSxkVW1pSO/KZJXmYM5e0g6tq55a', 'buyer', '2025-11-29 15:18:44');
+INSERT INTO `user` (`user_id`, `username`, `email`, `password_hash`, `account_type`, `created_at`, `balance`) VALUES
+(2, 'TestBuyer', 'TestBuyer@gmail.com', '$2y$10$ia4nS7kT8Tpw2YGUgqc0su74B9D3edUAooHU0eBqLW671Hzvjj/wm', 'buyer', '2025-11-29 00:51:34', 0.00),
+(3, 'TestSeller', 'TestSeller@gmail.com', '$2y$10$15tgS.9pAT7FtuZ7.M60S.CPWyO2MFsILIILx1.fvVfs9Z.Tbmf6i', 'seller', '2025-11-29 01:24:00', 0.00),
+(4, 'U1', 'wu029385@gmail.com', '$2y$10$g2DDjQbYXph7/Isor4W6XuFgbXSxkVW1pSO/KZJXmYM5e0g6tq55a', 'buyer', '2025-11-29 15:18:44', 0.00),
+(9, 'yah', 'yanhan@22.com', '$2y$10$MTZ4Iky5ZxjfPMC9OkeK2emcUNNJCqIBMHXUh/1j47BLQo35Ac21m', 'buyer', '2025-12-03 17:52:01', 50.00),
+(13, 'princess', 'jiaqisun617@gmail.com', '$2y$10$/0azSy00DCH9DKS0Yn50qenNzLtbXyljoJ2nHABzAlJAqid8NglFS', 'buyer', '2025-12-03 18:23:50', 96.00),
+(14, 'seller2', 'princess@gmail.com', '$2y$10$fu6eWVv/rHjNY2Cp4lRwbu2ukhU2H1/Jtw77vAwOJ1Nq3KrYzCsrW', 'buyer', '2025-12-03 18:27:40', 0.00),
+(15, 'seller3', 'seller@gmail.com', '$2y$10$AoYRqXfk/jztABAOJMD3meHE7gcVeBbRjOU4F3lk3PsDvEwMBd45C', 'seller', '2025-12-03 18:29:12', 0.00);
 
 -- --------------------------------------------------------
 
@@ -232,12 +253,14 @@ CREATE TABLE `userrole` (
 --
 
 INSERT INTO `userrole` (`user_id`, `role_id`) VALUES
-(1, 1),
-(1, 3),
 (2, 1),
 (3, 2),
 (4, 1),
-(4, 2);
+(4, 2),
+(9, 1),
+(13, 1),
+(14, 1),
+(15, 2);
 
 -- --------------------------------------------------------
 
@@ -248,9 +271,15 @@ INSERT INTO `userrole` (`user_id`, `role_id`) VALUES
 CREATE TABLE `watchlist` (
   `user_id` int(11) NOT NULL,
   `auction_id` int(11) NOT NULL,
-  `created_at` datetime DEFAULT current_timestamp(),
-  `notify_email` tinyint(1) DEFAULT 0
+  `created_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- 转存表中的数据 `watchlist`
+--
+
+INSERT INTO `watchlist` (`user_id`, `auction_id`, `created_at`) VALUES
+(13, 4, '2025-12-03 18:57:09');
 
 --
 -- 转储表的索引
@@ -285,9 +314,9 @@ ALTER TABLE `image`
   ADD KEY `fk_image_item` (`item_id`);
 
 --
--- 表的索引 `Item`
+-- 表的索引 `item`
 --
-ALTER TABLE `Item`
+ALTER TABLE `item`
   ADD PRIMARY KEY (`item_id`),
   ADD KEY `seller_id` (`seller_id`),
   ADD KEY `category_id` (`category_id`);
@@ -329,13 +358,13 @@ ALTER TABLE `watchlist`
 -- 使用表AUTO_INCREMENT `auction`
 --
 ALTER TABLE `auction`
-  MODIFY `auction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `auction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- 使用表AUTO_INCREMENT `bid`
 --
 ALTER TABLE `bid`
-  MODIFY `bid_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `bid_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- 使用表AUTO_INCREMENT `category`
@@ -347,13 +376,13 @@ ALTER TABLE `category`
 -- 使用表AUTO_INCREMENT `image`
 --
 ALTER TABLE `image`
-  MODIFY `image_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `image_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
--- 使用表AUTO_INCREMENT `Item`
+-- 使用表AUTO_INCREMENT `item`
 --
-ALTER TABLE `Item`
-  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+ALTER TABLE `item`
+  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- 使用表AUTO_INCREMENT `role`
@@ -365,7 +394,7 @@ ALTER TABLE `role`
 -- 使用表AUTO_INCREMENT `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- 限制导出的表
@@ -388,12 +417,12 @@ ALTER TABLE `bid`
 -- 限制表 `image`
 --
 ALTER TABLE `image`
-  ADD CONSTRAINT `fk_image_item` FOREIGN KEY (`item_id`) REFERENCES `Item` (`item_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `fk_image_item` FOREIGN KEY (`item_id`) REFERENCES `item` (`item_id`) ON DELETE CASCADE;
 
 --
--- 限制表 `Item`
+-- 限制表 `item`
 --
-ALTER TABLE `Item`
+ALTER TABLE `item`
   ADD CONSTRAINT `item_ibfk_1` FOREIGN KEY (`seller_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `item_ibfk_2` FOREIGN KEY (`category_id`) REFERENCES `category` (`category_id`) ON DELETE SET NULL;
 

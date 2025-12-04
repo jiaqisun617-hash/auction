@@ -83,7 +83,7 @@ if (!mysqli_stmt_execute($item_stmt)) {
 $item_id = mysqli_insert_id($connection);
 mysqli_stmt_close($item_stmt);
 
-// ---------- 多图片上传处理 ----------
+// Handle Image Uploads
 if (isset($_FILES['item_images']) && !empty($_FILES['item_images']['name'][0])) {
 
     $files = $_FILES['item_images'];
@@ -92,18 +92,14 @@ if (isset($_FILES['item_images']) && !empty($_FILES['item_images']['name'][0])) 
 
         if ($files['error'][$i] !== UPLOAD_ERR_OK) continue;
 
-        // 获取扩展名
         $ext = pathinfo($files['name'][$i], PATHINFO_EXTENSION);
         if ($ext == '') $ext = 'jpg';
 
-        // 生成唯一文件名
         $filename = 'item_' . $item_id . '_' . time() . '_' . $i . '.' . $ext;
         $dest = 'uploads/' . $filename;
 
-        // 保存文件
         move_uploaded_file($files['tmp_name'][$i], $dest);
 
-        // 按顺序插入数据库
         $sort_order = $i + 1;
 
         $sql_img = "INSERT INTO image (item_id, path, sort_order)

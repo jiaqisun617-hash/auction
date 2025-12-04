@@ -28,7 +28,7 @@
     </div>
   </div>
 
-  <!-- 新增username -->
+  <!-- add username -->
   <div class="form-group row">
   <label for="username" class="col-sm-2 col-form-label text-right">Username</label>
   <div class="col-sm-10">
